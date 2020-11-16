@@ -129,7 +129,6 @@ func GetProfile(authToken string) (user *User, err error) {
 	var body []byte
 	if body, err = ioutil.ReadAll(resp.Body); err != nil {
 		return nil, fmt.Errorf("failed reading the body: %s", err.Error())
-
 	}
 
 	user = new(User)
