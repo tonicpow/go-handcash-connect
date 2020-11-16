@@ -132,7 +132,7 @@ func GetProfile(authToken string) (user *User, err error) {
 
 	}
 
-	user := new(User)
+	user = new(User)
 
 	if err = json.Unmarshal(body, &user); err != nil {
 		return nil, fmt.Errorf("failed unmarshal HandCash user: %s", err.Error())
