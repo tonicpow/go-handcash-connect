@@ -58,12 +58,12 @@ func getHandCashRequestSignatureHash(method string, endpoint string, timestamp s
 	return fmt.Sprintf("%s\n%s\n%s\n{}", method, endpoint, timestamp)
 }
 
-func getSignedRequest(method string, endpoint string, body *requestBody) (*SignedRequest, error) {
+func getSignedRequest(method string, endpoint string, authToken string, body interface{}) (*SignedRequest, error) {
 	// Match JS ISO time exactly
 	JavascriptISOString := "2006-01-02T15:04:05.999Z07:00"
 	timestamp := time.Now().UTC().Format(JavascriptISOString)
 
-	tokenBytes, err := hex.DecodeString(body.authToken)
+	tokenBytes, err := hex.DecodeString(authToken)
 	if err != nil {
 		return nil, err
 	}
@@ -73,6 +73,7 @@ func getSignedRequest(method string, endpoint string, body *requestBody) (*Signe
 	if requestSignature, err = getHandCashRequestSignature(method, endpoint, timestamp, privateKey); err != nil {
 		return nil, err
 	}
+
 	return &SignedRequest{
 		URI:    APIURL + endpoint,
 		Method: method,
