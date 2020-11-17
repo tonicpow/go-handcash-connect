@@ -1,11 +1,20 @@
 package handcash
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestGetProfile(t *testing.T) {
 
-	_, err := GetProfile("fakeToken")
-	if err != nil {
-		t.Logf("Got err %xs", err)
-	}
+	t.Run("missing token", func(t *testing.T) {
+		_, err := GetProfile("")
+		assert.Error(t, err)
+	})
+
+	t.Run("bad token", func(t *testing.T) {
+		_, err := GetProfile("fakeToken")
+		assert.Error(t, err)
+	})
 }

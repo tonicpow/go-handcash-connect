@@ -1,3 +1,9 @@
+// Package handcash is an unofficial Go version of HandCash Connect's SDK
+//
+// If you have any suggestions or comments, please feel free to open an issue on
+// this GitHub repository!
+//
+// By TonicPow Inc (https://tonicpow.com)
 package handcash
 
 import (
@@ -45,7 +51,11 @@ type requestBody struct {
 }
 
 // API Documentation https://handcash.github.io/handcash-connect-sdk-js-beta-docs
+
+// APIURL is the server side API url
 const APIURL = "https://beta-cloud.handcash.io"
+
+// ClientURL is the client side url
 const ClientURL = "https://beta-app.handcash.io"
 
 // OauthHeaders are used for signed requests
@@ -87,26 +97,29 @@ func getHandCashRequestSignatureHash(method string, endpoint string, timestamp s
 	return fmt.Sprintf("%s\n%s\n%s\n{}", method, endpoint, timestamp)
 }
 
+// GetProfile will get the profile
 func GetProfile(authToken string) (user *User, err error) {
+
 	// Make sure we have an auth token
 	if len(authToken) == 0 {
 		return nil, fmt.Errorf("missing auth token")
 	}
 
 	// Get the signed request
-	signedRequest, err := getSignedRequest(http.MethodGet, "/v1/connect/profile/currentUserProfile", &requestBody{
+	var signedRequest *SignedRequest
+	signedRequest, err = getSignedRequest(http.MethodGet, "/v1/connect/profile/currentUserProfile", &requestBody{
 		authToken: sanitize.AlphaNumeric(authToken, false),
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("error creating signed request: %s", err.Error())
+		return nil, fmt.Errorf("error creating signed request: %w", err)
 	}
 
 	// Start the Request
 	var request *http.Request
 	var jsonValue []byte
 	if request, err = http.NewRequestWithContext(context.Background(), signedRequest.Method, signedRequest.URI, bytes.NewBuffer(jsonValue)); err != nil {
-		return nil, fmt.Errorf("error creating new request: %s", err.Error())
+		return nil, fmt.Errorf("error creating new request: %w", err)
 	}
 
 	// Set oAuth headers
@@ -117,7 +130,7 @@ func GetProfile(authToken string) (user *User, err error) {
 	// Fire the http Request
 	var resp *http.Response
 	if resp, err = http.DefaultClient.Do(request); err != nil {
-		return nil, fmt.Errorf("failed doing http request: %s", err.Error())
+		return nil, fmt.Errorf("failed doing http request: %w", err)
 	}
 
 	// Close the response body
@@ -128,20 +141,20 @@ func GetProfile(authToken string) (user *User, err error) {
 	// Read the body
 	var body []byte
 	if body, err = ioutil.ReadAll(resp.Body); err != nil {
-		return nil, fmt.Errorf("failed reading the body: %s", err.Error())
+		return nil, fmt.Errorf("failed reading the body: %w", err)
 	}
 
 	user = new(User)
 
 	if err = json.Unmarshal(body, &user); err != nil {
-		return nil, fmt.Errorf("failed unmarshal HandCash user: %s", err.Error())
+		return nil, fmt.Errorf("failed unmarshal HandCash user: %w", err)
 	} else if user == nil {
-		return nil, fmt.Errorf("failed to find a HandCash user in context: %s", err.Error())
+		return nil, fmt.Errorf("failed to find a HandCash user in context: %w", err)
 	} else if len(user.PrivateProfile.Email) == 0 {
-		return nil, fmt.Errorf("failed to find an email address for HandCash user: %s", err.Error())
+		return nil, fmt.Errorf("failed to find an email address for HandCash user: %s", user.PublicProfile.ID)
 	}
 
-	return user, nil
+	return
 }
 
 func getSignedRequest(method string, endpoint string, body *requestBody) (*SignedRequest, error) {
@@ -156,8 +169,7 @@ func getSignedRequest(method string, endpoint string, body *requestBody) (*Signe
 	privateKey, publicKey := bsvec.PrivKeyFromBytes(bsvec.S256(), tokenBytes)
 
 	var requestSignature []byte
-	requestSignature, err = getHandCashRequestSignature(method, endpoint, timestamp, privateKey)
-	if err != nil {
+	if requestSignature, err = getHandCashRequestSignature(method, endpoint, timestamp, privateKey); err != nil {
 		return nil, err
 	}
 	return &SignedRequest{
