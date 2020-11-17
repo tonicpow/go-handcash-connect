@@ -37,7 +37,6 @@ View the generated [documentation](https://pkg.go.dev/github.com/tonicpow/go-han
 [![GoDoc](https://godoc.org/github.com/tonicpow/go-handcash-connect?status.svg&style=flat)](https://pkg.go.dev/github.com/tonicpow/go-handcash-connect)
 
 ### Features
-- [Client](client.go) is completely configurable
 - Current coverage for the [HandCash Connect SDK](https://handcash.github.io/handcash-connect-sdk-js-beta-docs/#/)
     - [x] GetProfile
     - [ ] GetBalance
@@ -123,20 +122,6 @@ Read more about this Go project's [code standards](CODE_STANDARDS.md).
 
 ## Usage
 View the [examples](handcash_test.go)
-
-Basic implementation:
-```go
-package main
-
-import (
-    "github.com/tonicpow/go-handcash-connect"
-)
-
-func main() {
-
-   // todo: add a basic example
-}
-```
  
 <br/>
 

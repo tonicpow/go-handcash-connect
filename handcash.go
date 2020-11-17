@@ -1,3 +1,9 @@
+// Package handcash is an unofficial Go version of HandCash Connect's SDK
+//
+// If you have any suggestions or comments, please feel free to open an issue on
+// this GitHub repository!
+//
+// By TonicPow Inc (https://tonicpow.com)
 package handcash
 
 import (
@@ -64,8 +70,7 @@ func getSignedRequest(method string, endpoint string, body *requestBody) (*Signe
 	privateKey, publicKey := bsvec.PrivKeyFromBytes(bsvec.S256(), tokenBytes)
 
 	var requestSignature []byte
-	requestSignature, err = getHandCashRequestSignature(method, endpoint, timestamp, privateKey)
-	if err != nil {
+	if requestSignature, err = getHandCashRequestSignature(method, endpoint, timestamp, privateKey); err != nil {
 		return nil, err
 	}
 	return &SignedRequest{
