@@ -1,7 +1,9 @@
 package handcash
 
+// CurrencyCode is an enum for supported currencies
 type CurrencyCode string
 
+// CurrenyCode enum
 const (
 	CurrencyARS CurrencyCode = "ARS"
 	CurrencyAUD CurrencyCode = "AUD"

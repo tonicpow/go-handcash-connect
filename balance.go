@@ -2,6 +2,7 @@ package handcash
 
 import "fmt"
 
+// Balance is the balance response
 type Balance struct {
 }
 

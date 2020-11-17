@@ -14,6 +14,7 @@ import (
 // AppAction enum
 type AppAction string
 
+// AppAction enum
 const (
 	AppActionTipGroup AppAction = "tip-group"
 	AppActionPublish  AppAction = "publish"
@@ -23,37 +24,37 @@ const (
 // AttachmentFormat enum
 type AttachmentFormat string
 
+// AttachmentFormat enum
 const (
 	AttachmentFormatBase64 AttachmentFormat = "base64"
 	AttachmentFormatJSON   AttachmentFormat = "json"
 )
 
+// Attachment is for additional data
 type Attachment struct {
-	format AttachmentFormat
-	value  map[string]string
+	Format AttachmentFormat  `json:"format"`
+	Value  map[string]string `json:"value"`
 }
 
+// Payment is used by PayParameters
 type Payment struct {
-	destination  string
-	currencyCode CurrencyCode
-	sendAmount   float64
+	Destination  string
+	CurrencyCode CurrencyCode
+	SendAmount   float64
 }
 
+// PayParameters is used by Pay()
 type PayParameters struct {
-	description string
-	appAction   AppAction
-	attachment  Attachment
-	payments    []Payment
-}
-
-type PayRequest struct {
-	authToken string
-	PayParameters
+	Description string
+	AppAction   AppAction
+	Attachment  Attachment
+	Payments    []Payment
 }
 
 // PaymentType enum
 type PaymentType string
 
+// PaymentType enum
 const (
 	PaymentSend PaymentType = "send"
 )
@@ -61,10 +62,12 @@ const (
 // ParticipantType enum
 type ParticipantType string
 
+// ParticipantType enum
 const (
 	ParticipantUser = "user"
 )
 
+// Participant is used for payments
 type Participant struct {
 	Type              ParticipantType `json:"type"`
 	Alias             string          `json:"alias"`
@@ -75,17 +78,19 @@ type Participant struct {
 
 // PaymentResponse is returned from the GetPayment function
 type PaymentResponse struct {
-	TransactionID    string `json:"transactionId`
-	Type             PaymentType
-	Time             uint64
-	SatoshiFees      uint64
-	SatoshiAmount    uint64
-	FiatExchangeRate float64
-	FiatCurrencyCode CurrencyCode
-	Participants     []Participant
-	Attachments      []Attachment
-	AppAction        AppAction
+	TransactionID    string        `json:"transactionId"`
+	Type             PaymentType   `json:"type"`
+	Time             uint64        `json:"time"`
+	SatoshiFees      uint64        `json:"satoshiFees"`
+	SatoshiAmount    uint64        `json:"satoshiAmount"`
+	FiatExchangeRate float64       `json:"fiatExchangeRate"`
+	FiatCurrencyCode CurrencyCode  `json:"fiatCurrencyCode"`
+	Participants     []Participant `json:"participants"`
+	Attachments      []Attachment  `json:"attachments"`
+	AppAction        AppAction     `json:"appAction"`
 }
+
+// PaymentRequest is used for GetPayment()
 type PaymentRequest struct {
 	TransactionID string `json:"transactionId"`
 }
@@ -152,12 +157,12 @@ func GetPayment(authToken string) (payResponse *PaymentResponse, err error) {
 // Pay gets a payment request from the handcash connect API
 func Pay(authToken string, payment string) (payResponse *PaymentResponse, err error) {
 
-	// TODO: unmarshal json string to payment paramters struct
+	// TODO: unmarshal json string to payment parameters struct
 
 	payParams := new(PayParameters)
 	err = json.Unmarshal([]byte(payment), payParams)
 	if err != nil {
-		return nil, fmt.Errorf("Invalid payment parameters %s", err)
+		return nil, fmt.Errorf("Invalid payment parameters %w", err)
 	}
 
 	// Make sure we have an auth token
