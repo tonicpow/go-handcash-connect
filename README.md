@@ -123,20 +123,6 @@ Read more about this Go project's [code standards](CODE_STANDARDS.md).
 
 ## Usage
 View the [examples](handcash_test.go)
-
-Basic implementation:
-```go
-package main
-
-import (
-    "github.com/tonicpow/go-handcash-connect"
-)
-
-func main() {
-
-   // todo: add a basic example
-}
-```
  
 <br/>
 
