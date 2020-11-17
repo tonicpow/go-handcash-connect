@@ -1,4 +1,4 @@
-package handcash
+package wallet
 
 import (
 	"bytes"
@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/mrz1836/go-sanitize"
+	"github.com/tonicpow/go-handcash-connect/api"
+	"github.com/tonicpow/go-handcash-connect/config"
 )
 
 // AppAction enum
@@ -39,7 +41,7 @@ type Attachment struct {
 // Payment is used by PayParameters
 type Payment struct {
 	Destination  string
-	CurrencyCode CurrencyCode
+	CurrencyCode config.CurrencyCode
 	SendAmount   float64
 }
 
@@ -78,16 +80,16 @@ type Participant struct {
 
 // PaymentResponse is returned from the GetPayment function
 type PaymentResponse struct {
-	TransactionID    string        `json:"transactionId"`
-	Type             PaymentType   `json:"type"`
-	Time             uint64        `json:"time"`
-	SatoshiFees      uint64        `json:"satoshiFees"`
-	SatoshiAmount    uint64        `json:"satoshiAmount"`
-	FiatExchangeRate float64       `json:"fiatExchangeRate"`
-	FiatCurrencyCode CurrencyCode  `json:"fiatCurrencyCode"`
-	Participants     []Participant `json:"participants"`
-	Attachments      []Attachment  `json:"attachments"`
-	AppAction        AppAction     `json:"appAction"`
+	TransactionID    string              `json:"transactionId"`
+	Type             PaymentType         `json:"type"`
+	Time             uint64              `json:"time"`
+	SatoshiFees      uint64              `json:"satoshiFees"`
+	SatoshiAmount    uint64              `json:"satoshiAmount"`
+	FiatExchangeRate float64             `json:"fiatExchangeRate"`
+	FiatCurrencyCode config.CurrencyCode `json:"fiatCurrencyCode"`
+	Participants     []Participant       `json:"participants"`
+	Attachments      []Attachment        `json:"attachments"`
+	AppAction        AppAction           `json:"appAction"`
 }
 
 // PaymentRequest is used for GetPayment()
@@ -96,7 +98,7 @@ type PaymentRequest struct {
 }
 
 // GetPayment fetches a payment by txid
-func GetPayment(authToken string) (payResponse *PaymentResponse, err error) {
+func GetPayment(authToken string, transactionID string) (payResponse *PaymentResponse, err error) {
 
 	// Make sure we have an auth token
 	if len(authToken) == 0 {
@@ -104,10 +106,9 @@ func GetPayment(authToken string) (payResponse *PaymentResponse, err error) {
 	}
 
 	// Get the signed request
-	// TODO: Does this really need to be sent in the body of the request as well?
-	var signedRequest *SignedRequest
-	signedRequest, err = getSignedRequest(http.MethodGet, "/v1/connect/wallet/payment", authToken, &requestBody{
-		authToken: sanitize.AlphaNumeric(authToken, false),
+	var signedRequest *api.SignedRequest
+	signedRequest, err = api.GetSignedRequest(http.MethodGet, "/v1/connect/wallet/payment", authToken, &PaymentRequest{
+		TransactionID: transactionID,
 	})
 
 	if err != nil {
@@ -171,10 +172,9 @@ func Pay(authToken string, payment string) (payResponse *PaymentResponse, err er
 	}
 
 	// Get the signed request
-	var signedRequest *SignedRequest
+	var signedRequest *api.SignedRequest
 
-	signedRequest, err = getSignedRequest(http.MethodPost, "/v1/connect/wallet/pay", sanitize.AlphaNumeric(authToken, false), payParams)
-
+	signedRequest, err = api.GetSignedRequest(http.MethodPost, "/v1/connect/wallet/pay", sanitize.AlphaNumeric(authToken, false), payParams)
 	if err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)
 	}

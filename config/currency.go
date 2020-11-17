@@ -1,4 +1,4 @@
-package handcash
+package config
 
 // CurrencyCode is an enum for supported currencies
 type CurrencyCode string

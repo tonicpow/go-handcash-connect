@@ -1,4 +1,4 @@
-package handcash
+package config
 
 // API Documentation https://handcash.github.io/handcash-connect-sdk-js-beta-docs
 const (

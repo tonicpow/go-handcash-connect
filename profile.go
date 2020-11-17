@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/mrz1836/go-sanitize"
+	"github.com/tonicpow/go-handcash-connect/api"
 )
 
 // User are the user fields returned by the public and private profile endpoints
@@ -45,11 +45,8 @@ func GetProfile(authToken string) (user *User, err error) {
 	}
 
 	// Get the signed request
-	// TODO: Does this really need to be in the body?
-	var signedRequest *SignedRequest
-	signedRequest, err = getSignedRequest(http.MethodGet, "/v1/connect/profile/currentUserProfile", authToken, &requestBody{
-		authToken: sanitize.AlphaNumeric(authToken, false),
-	})
+	var signedRequest *api.SignedRequest
+	signedRequest, err = api.GetSignedRequest(http.MethodGet, "/v1/connect/profile/currentUserProfile", authToken, nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)
