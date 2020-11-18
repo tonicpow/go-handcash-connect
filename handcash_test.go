@@ -9,7 +9,9 @@ import (
 func TestGetProfile(t *testing.T) {
 
 	t.Run("missing token", func(t *testing.T) {
+
 		_, err := GetProfile("")
+
 		assert.Error(t, err)
 	})
 

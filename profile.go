@@ -6,10 +6,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/tonicpow/go-handcash-connect/api"
 )
+
+type errorResponse struct {
+	Message string `json:"message"`
+}
 
 // User are the user fields returned by the public and private profile endpoints
 type User struct {
@@ -81,6 +86,15 @@ func GetProfile(authToken string) (user *User, err error) {
 		return nil, fmt.Errorf("failed reading the body: %w", err)
 	}
 
+	if resp.StatusCode != 200 {
+		errorMsg := new(errorResponse)
+		if err = json.Unmarshal(body, &errorMsg); err != nil {
+			return nil, fmt.Errorf("failed unmarshal error: %w", err)
+		}
+
+		return nil, fmt.Errorf("Bad response: %s", errorMsg.Message)
+	}
+
 	user = new(User)
 
 	if err = json.Unmarshal(body, &user); err != nil {
@@ -88,8 +102,9 @@ func GetProfile(authToken string) (user *User, err error) {
 	} else if user == nil {
 		return nil, fmt.Errorf("failed to find a HandCash user in context: %w", err)
 	} else if len(user.PrivateProfile.Email) == 0 {
-		return nil, fmt.Errorf("failed to find an email address for HandCash user: %s", user.PublicProfile.ID)
+		return nil, fmt.Errorf("failed to find an email address for HandCash user: %+v", user)
 	}
 
+	log.Printf("User %+v", user)
 	return
 }
