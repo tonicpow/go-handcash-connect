@@ -47,7 +47,8 @@ func GetHandCashRequestSignatureHash(method string, endpoint string, body interf
 	if body == nil {
 		body = "{}"
 	} else {
-		body, _ = json.Marshal(body)
+		bodyBytes, _ := json.Marshal(body)
+		body = fmt.Sprintf("%s", bodyBytes)
 	}
 	sigHash := fmt.Sprintf("%s\n%s\n%s", method, endpoint, timestamp)
 	if body != nil {
