@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/bitcoinsv/bsvd/bsvec"
@@ -27,12 +28,12 @@ type SignedRequest struct {
 	JSON    bool         `json:"json"`
 }
 
-// GetHandCashRequestSignature will return the signature hash
+// GetRequestSignature will return the signature hash
 //
 // Removed "body" since it was empty (in the future, might be needed again)
 //
-func GetHandCashRequestSignature(method string, endpoint string, body interface{}, timestamp string, privateKey *bsvec.PrivateKey) ([]byte, error) {
-	signatureHash, err := GetHandCashRequestSignatureHash(method, endpoint, body, timestamp)
+func GetRequestSignature(method string, endpoint string, body interface{}, timestamp string, privateKey *bsvec.PrivateKey) ([]byte, error) {
+	signatureHash, err := GetRequestSignatureHash(method, endpoint, body, timestamp)
 	if err != nil {
 		return nil, err
 	}
@@ -44,12 +45,16 @@ func GetHandCashRequestSignature(method string, endpoint string, body interface{
 	return sig.Serialize(), nil
 }
 
-// GetHandCashRequestSignatureHash will return the signature hash
+// GetRequestSignatureHash will return the signature hash
 // should not return an error
-func GetHandCashRequestSignatureHash(method string, endpoint string, body interface{}, timestamp string) (string, error) {
+func GetRequestSignatureHash(method string, endpoint string, body interface{}, timestamp string) (string, error) {
 
+	// return `${method}\n${endpoint}\n${timestamp}\n${JSON.stringify(body)}`;
+
+	log.Printf("What do i not have? %s %s %s %s", method, endpoint, body, timestamp)
 	var bodyString string
 	if body == nil {
+		log.Printf("Body is nil")
 		bodyString = "{}"
 	} else {
 		bodyBytes, err := json.Marshal(body)
@@ -60,6 +65,7 @@ func GetHandCashRequestSignatureHash(method string, endpoint string, body interf
 	}
 	sigHash := fmt.Sprintf("%s\n%s\n%s\n%s", method, endpoint, timestamp, bodyString)
 
+	log.Printf("Sighash %s", sigHash)
 	return sigHash, nil
 }
 
@@ -76,7 +82,7 @@ func GetSignedRequest(method string, endpoint string, authToken string, body int
 	privateKey, publicKey := bsvec.PrivKeyFromBytes(bsvec.S256(), tokenBytes)
 
 	var requestSignature []byte
-	if requestSignature, err = GetHandCashRequestSignature(method, endpoint, body, timestamp, privateKey); err != nil {
+	if requestSignature, err = GetRequestSignature(method, endpoint, body, timestamp, privateKey); err != nil {
 		return nil, err
 	}
 
