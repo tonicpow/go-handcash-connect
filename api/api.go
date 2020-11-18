@@ -32,7 +32,10 @@ type SignedRequest struct {
 // Removed "body" since it was empty (in the future, might be needed again)
 //
 func GetHandCashRequestSignature(method string, endpoint string, body interface{}, timestamp string, privateKey *bsvec.PrivateKey) ([]byte, error) {
-	signatureHash := GetHandCashRequestSignatureHash(method, endpoint, body, timestamp)
+	signatureHash, err := GetHandCashRequestSignatureHash(method, endpoint, body, timestamp)
+	if err != nil {
+		return nil, err
+	}
 	hash := sha256.Sum256([]byte(signatureHash))
 	sig, err := privateKey.Sign(hash[:])
 	if err != nil {
@@ -43,18 +46,21 @@ func GetHandCashRequestSignature(method string, endpoint string, body interface{
 
 // GetHandCashRequestSignatureHash will return the signature hash
 // should not return an error
-func GetHandCashRequestSignatureHash(method string, endpoint string, body interface{}, timestamp string) string {
+func GetHandCashRequestSignatureHash(method string, endpoint string, body interface{}, timestamp string) (string, error) {
+
+	var bodyString string
 	if body == nil {
-		body = "{}"
+		bodyString = "{}"
 	} else {
-		bodyBytes, _ := json.Marshal(body)
-		body = fmt.Sprintf("%s", bodyBytes)
+		bodyBytes, err := json.Marshal(body)
+		if err != nil {
+			return "", fmt.Errorf("Failed to marshal body %w", err)
+		}
+		bodyString = fmt.Sprintf("%s", bodyBytes)
 	}
-	sigHash := fmt.Sprintf("%s\n%s\n%s", method, endpoint, timestamp)
-	if body != nil {
-		sigHash = sigHash + fmt.Sprintf("\n%s", body)
-	}
-	return sigHash
+	sigHash := fmt.Sprintf("%s\n%s\n%s\n%s", method, endpoint, timestamp, bodyString)
+
+	return sigHash, nil
 }
 
 // GetSignedRequest returns the request with signature
