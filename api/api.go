@@ -3,7 +3,6 @@ package api
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -48,18 +47,18 @@ func GetRequestSignatureHash(method string, endpoint string, body interface{}, t
 	// return `${method}\n${endpoint}\n${timestamp}\n${JSON.stringify(body)}`;
 
 	log.Printf("What do i not have? %s %s %s %s", method, endpoint, body, timestamp)
-	var bodyString string
-	if body == nil {
-		log.Printf("Body is nil")
-		bodyString = "{}"
-	} else {
-		bodyBytes, err := json.Marshal(body)
-		if err != nil {
-			return "", fmt.Errorf("Failed to marshal body %w", err)
-		}
-		bodyString = fmt.Sprintf("%s", bodyBytes)
-	}
-	sigHash := fmt.Sprintf("%s\n%s\n%s\n%s", method, endpoint, timestamp, bodyString)
+	// var bodyString string
+	// if body == nil {
+	// 	log.Printf("Body is nil")
+	// 	bodyString = "{}"
+	// } else {
+	// 	bodyBytes, err := json.Marshal(body)
+	// 	if err != nil {
+	// 		return "", fmt.Errorf("Failed to marshal body %w", err)
+	// 	}
+	// 	bodyString = fmt.Sprintf("%s", bodyBytes)
+	// }
+	sigHash := fmt.Sprintf("%s\n%s\n%s\n{}", method, endpoint, timestamp)
 
 	log.Printf("Sighash %s", sigHash)
 	return sigHash, nil
