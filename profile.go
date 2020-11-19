@@ -92,7 +92,7 @@ func GetProfile(authToken string) (user *User, err error) {
 			return nil, fmt.Errorf("failed unmarshal error: %w", err)
 		}
 
-		return nil, fmt.Errorf("Bad response: %s", errorMsg.Message)
+		return nil, fmt.Errorf("Bad response: %s %s %s %+v", errorMsg.Message, authToken, request.RequestURI, signedRequest)
 	}
 
 	user = new(User)

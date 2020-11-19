@@ -29,9 +29,6 @@ type SignedRequest struct {
 }
 
 // GetRequestSignature will return the signature hash
-//
-// Removed "body" since it was empty (in the future, might be needed again)
-//
 func GetRequestSignature(method string, endpoint string, body interface{}, timestamp string, privateKey *bsvec.PrivateKey) ([]byte, error) {
 	signatureHash, err := GetRequestSignatureHash(method, endpoint, body, timestamp)
 	if err != nil {
@@ -46,7 +43,6 @@ func GetRequestSignature(method string, endpoint string, body interface{}, times
 }
 
 // GetRequestSignatureHash will return the signature hash
-// should not return an error
 func GetRequestSignatureHash(method string, endpoint string, body interface{}, timestamp string) (string, error) {
 
 	// return `${method}\n${endpoint}\n${timestamp}\n${JSON.stringify(body)}`;
