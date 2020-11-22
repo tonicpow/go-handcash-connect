@@ -14,6 +14,10 @@ import (
 	"github.com/tonicpow/go-handcash-connect/utils"
 )
 
+type requestBody struct {
+	authToken string
+}
+
 type errorResponse struct {
 	Message string `json:"message"`
 }
