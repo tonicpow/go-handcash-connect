@@ -3,10 +3,11 @@ package api
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 
+	"github.com/bitcoinschema/go-bitcoin"
 	"github.com/bitcoinsv/bsvd/bsvec"
 	"github.com/tonicpow/go-handcash-connect/config"
 )
@@ -43,32 +44,23 @@ func GetRequestSignature(method string, endpoint string, body interface{}, times
 
 // GetRequestSignatureHash will return the signature hash
 func GetRequestSignatureHash(method string, endpoint string, body interface{}, timestamp string) (string, error) {
-
-	// return `${method}\n${endpoint}\n${timestamp}\n${JSON.stringify(body)}`;
-
-	log.Printf("What do i not have? %s %s %s %s", method, endpoint, body, timestamp)
-	// var bodyString string
-	// if body == nil {
-	// 	log.Printf("Body is nil")
-	// 	bodyString = "{}"
-	// } else {
-	// 	bodyBytes, err := json.Marshal(body)
-	// 	if err != nil {
-	// 		return "", fmt.Errorf("Failed to marshal body %w", err)
-	// 	}
-	// 	bodyString = fmt.Sprintf("%s", bodyBytes)
-	// }
-	sigHash := fmt.Sprintf("%s\n%s\n%s\n{}", method, endpoint, timestamp)
-
-	log.Printf("Sighash %s", sigHash)
+	var bodyString string
+	if body == nil {
+		bodyString = "{}"
+	} else {
+		bodyBytes, err := json.Marshal(body)
+		if err != nil {
+			return "", fmt.Errorf("Failed to marshal body %w", err)
+		}
+		bodyString = fmt.Sprintf("%s", bodyBytes)
+	}
+	sigHash := fmt.Sprintf("%s\n%s\n%s\n%s", method, endpoint, timestamp, bodyString)
+	log.Printf("sighash bytes %x", []byte(sigHash))
 	return sigHash, nil
 }
 
 // GetSignedRequest returns the request with signature
-func GetSignedRequest(method string, endpoint string, authToken string, body interface{}) (*SignedRequest, error) {
-	// Match JS ISO time exactly
-	JavascriptISOString := "2006-01-02T15:04:05.999Z07:00"
-	timestamp := time.Now().UTC().Format(JavascriptISOString)
+func GetSignedRequest(method string, endpoint string, authToken string, body interface{}, timestamp string) (*SignedRequest, error) {
 
 	tokenBytes, err := hex.DecodeString(authToken)
 	if err != nil {
@@ -80,6 +72,10 @@ func GetSignedRequest(method string, endpoint string, authToken string, body int
 	if requestSignature, err = GetRequestSignature(method, endpoint, body, timestamp, privateKey); err != nil {
 		return nil, err
 	}
+
+	log.Printf("Public key %s\n", publicKey.SerializeCompressed())
+	wif, _ := bitcoin.PrivateKeyToWifString(hex.EncodeToString(privateKey.Serialize()))
+	log.Println("Private key key", wif)
 
 	return &SignedRequest{
 		URI:    config.APIURL + endpoint,

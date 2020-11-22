@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/tonicpow/go-handcash-connect/api"
+	"github.com/tonicpow/go-handcash-connect/utils"
 )
 
 type errorResponse struct {
@@ -51,7 +52,7 @@ func GetProfile(authToken string) (user *User, err error) {
 
 	// Get the signed request
 	var signedRequest *api.SignedRequest
-	signedRequest, err = api.GetSignedRequest(http.MethodGet, "/v1/connect/profile/currentUserProfile", authToken, nil)
+	signedRequest, err = api.GetSignedRequest(http.MethodGet, "/v1/connect/profile/currentUserProfile", authToken, nil, utils.ISOTimestamp())
 
 	if err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)

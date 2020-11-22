@@ -11,6 +11,7 @@ import (
 	"github.com/mrz1836/go-sanitize"
 	"github.com/tonicpow/go-handcash-connect/api"
 	"github.com/tonicpow/go-handcash-connect/config"
+	"github.com/tonicpow/go-handcash-connect/utils"
 )
 
 // AppAction enum
@@ -109,7 +110,7 @@ func GetPayment(authToken string, transactionID string) (payResponse *PaymentRes
 	var signedRequest *api.SignedRequest
 	signedRequest, err = api.GetSignedRequest(http.MethodGet, "/v1/connect/wallet/payment", authToken, &PaymentRequest{
 		TransactionID: transactionID,
-	})
+	}, utils.ISOTimestamp())
 
 	if err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)
@@ -174,7 +175,7 @@ func Pay(authToken string, payment string) (payResponse *PaymentResponse, err er
 	// Get the signed request
 	var signedRequest *api.SignedRequest
 
-	signedRequest, err = api.GetSignedRequest(http.MethodPost, "/v1/connect/wallet/pay", sanitize.AlphaNumeric(authToken, false), payParams)
+	signedRequest, err = api.GetSignedRequest(http.MethodPost, "/v1/connect/wallet/pay", sanitize.AlphaNumeric(authToken, false), payParams, utils.ISOTimestamp())
 	if err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)
 	}

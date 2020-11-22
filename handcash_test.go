@@ -8,6 +8,13 @@ import (
 
 func TestGetProfile(t *testing.T) {
 
+	t.Run("bad token", func(t *testing.T) {
+		_, err := GetProfile("fakeToken")
+		assert.Error(t, err)
+	})
+
+	// Test missing token
+
 	t.Run("missing token", func(t *testing.T) {
 
 		_, err := GetProfile("")
