@@ -31,7 +31,5 @@ func TestGetSignedRequest(t *testing.T) {
 		if signedRequest.Headers.OauthSignature != signature {
 			t.Errorf("Signature mismatch: %s : %s", signedRequest.Headers.OauthSignature, signature)
 		}
-
 	})
-
 }

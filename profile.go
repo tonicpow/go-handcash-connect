@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/mrz1836/go-sanitize"
 	"github.com/tonicpow/go-handcash-connect/api"
 	"github.com/tonicpow/go-handcash-connect/utils"
 )
@@ -52,7 +53,9 @@ func GetProfile(authToken string) (user *User, err error) {
 
 	// Get the signed request
 	var signedRequest *api.SignedRequest
-	signedRequest, err = api.GetSignedRequest(http.MethodGet, "/v1/connect/profile/currentUserProfile", authToken, nil, utils.ISOTimestamp())
+	signedRequest, err = api.GetSignedRequest(http.MethodGet, "/v1/connect/profile/currentUserProfile", authToken, &requestBody{
+		authToken: sanitize.AlphaNumeric(authToken, false),
+	}, utils.ISOTimestamp())
 
 	if err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)
