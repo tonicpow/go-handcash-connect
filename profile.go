@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/mrz1836/go-sanitize"
@@ -112,7 +111,5 @@ func GetProfile(authToken string) (user *User, err error) {
 	} else if len(user.PrivateProfile.Email) == 0 {
 		return nil, fmt.Errorf("failed to find an email address for HandCash user: %+v", user)
 	}
-
-	log.Printf("User %+v", user)
 	return
 }

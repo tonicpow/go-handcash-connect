@@ -5,9 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"log"
 
-	"github.com/bitcoinschema/go-bitcoin"
 	"github.com/bitcoinsv/bsvd/bsvec"
 	"github.com/tonicpow/go-handcash-connect/config"
 )
@@ -55,7 +53,6 @@ func GetRequestSignatureHash(method string, endpoint string, body interface{}, t
 		bodyString = fmt.Sprintf("%s", bodyBytes)
 	}
 	sigHash := fmt.Sprintf("%s\n%s\n%s\n%s", method, endpoint, timestamp, bodyString)
-	log.Printf("sighash bytes %x", []byte(sigHash))
 	return sigHash, nil
 }
 
@@ -72,10 +69,6 @@ func GetSignedRequest(method string, endpoint string, authToken string, body int
 	if requestSignature, err = GetRequestSignature(method, endpoint, body, timestamp, privateKey); err != nil {
 		return nil, err
 	}
-
-	log.Printf("Public key %s\n", publicKey.SerializeCompressed())
-	wif, _ := bitcoin.PrivateKeyToWifString(hex.EncodeToString(privateKey.Serialize()))
-	log.Println("Private key key", wif)
 
 	return &SignedRequest{
 		URI:    config.APIURL + endpoint,
