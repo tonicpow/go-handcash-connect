@@ -67,7 +67,7 @@ func GetProfile(authToken string) (user *User, err error) {
 
 	// Start the Request
 	var request *http.Request
-	var jsonValue []byte
+	jsonValue := []byte(`{}`)
 	if request, err = http.NewRequestWithContext(context.Background(), signedRequest.Method, signedRequest.URI, bytes.NewBuffer(jsonValue)); err != nil {
 		return nil, fmt.Errorf("error creating new request: %w", err)
 	}
