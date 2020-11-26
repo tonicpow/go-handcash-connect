@@ -159,14 +159,6 @@ func GetPayment(authToken string, transactionID string) (payResponse *PaymentRes
 // Pay gets a payment request from the handcash connect API
 func Pay(authToken string, payParams PayParameters) (payResponse *PaymentResponse, err error) {
 
-	// TODO: unmarshal json string to payment parameters struct
-
-	// payParams := new(PayParameters)
-	// err = json.Unmarshal([]byte(payment), payParams)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("Invalid payment parameters %w", err)
-	// }
-
 	// Make sure we have an auth token
 	if len(authToken) == 0 {
 		return nil, fmt.Errorf("missing auth token")
@@ -182,8 +174,8 @@ func Pay(authToken string, payParams PayParameters) (payResponse *PaymentRespons
 
 	// Start the Request
 	var request *http.Request
-	var jsonValue []byte
-	if request, err = http.NewRequestWithContext(context.Background(), signedRequest.Method, signedRequest.URI, bytes.NewBuffer(jsonValue)); err != nil {
+	payParamsBytes, err := json.Marshal(payParams)
+	if request, err = http.NewRequestWithContext(context.Background(), signedRequest.Method, signedRequest.URI, bytes.NewBuffer(payParamsBytes)); err != nil {
 		return nil, fmt.Errorf("error creating new request: %w", err)
 	}
 
@@ -215,6 +207,8 @@ func Pay(authToken string, payParams PayParameters) (payResponse *PaymentRespons
 		return nil, fmt.Errorf("failed unmarshal HandCash payResponse: %w", err)
 	} else if payResponse == nil {
 		return nil, fmt.Errorf("failed to pay: %w", err)
+	} else if payResponse.TransactionID == "" {
+		return nil, fmt.Errorf("Bad response from handcash API. Invalid Transaction ID %s", payResponse.TransactionID)
 	}
 
 	return
