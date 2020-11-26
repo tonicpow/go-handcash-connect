@@ -52,9 +52,9 @@ type Payment struct {
 
 // PayParameters is used by Pay()
 type PayParameters struct {
-	Description string
+	Description string `json:"description,omitempty"`
 	AppAction   AppAction
-	Attachment  Attachment
+	Attachment  Attachment `json:"attachment,omitempty"`
 	Payments    []Payment
 }
 
