@@ -14,6 +14,10 @@ import (
 	"github.com/tonicpow/go-handcash-connect/utils"
 )
 
+type errorResponse struct {
+	Message string `json:"message"`
+}
+
 // AppAction enum
 type AppAction string
 
@@ -199,6 +203,15 @@ func Pay(authToken string, payParams PayParameters) (payResponse *PaymentRespons
 	var body []byte
 	if body, err = ioutil.ReadAll(resp.Body); err != nil {
 		return nil, fmt.Errorf("failed reading the body: %w", err)
+	}
+
+	if resp.StatusCode != 200 {
+		errorMsg := new(errorResponse)
+		if err = json.Unmarshal(body, &errorMsg); err != nil {
+			return nil, fmt.Errorf("failed unmarshal error: %w", err)
+		}
+
+		return nil, fmt.Errorf("Bad response: %s %s %s %+v", errorMsg.Message, authToken, request.RequestURI, signedRequest)
 	}
 
 	payResponse = new(PaymentResponse)
