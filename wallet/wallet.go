@@ -157,15 +157,15 @@ func GetPayment(authToken string, transactionID string) (payResponse *PaymentRes
 }
 
 // Pay gets a payment request from the handcash connect API
-func Pay(authToken string, payment string) (payResponse *PaymentResponse, err error) {
+func Pay(authToken string, payParams PayParameters) (payResponse *PaymentResponse, err error) {
 
 	// TODO: unmarshal json string to payment parameters struct
 
-	payParams := new(PayParameters)
-	err = json.Unmarshal([]byte(payment), payParams)
-	if err != nil {
-		return nil, fmt.Errorf("Invalid payment parameters %w", err)
-	}
+	// payParams := new(PayParameters)
+	// err = json.Unmarshal([]byte(payment), payParams)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("Invalid payment parameters %w", err)
+	// }
 
 	// Make sure we have an auth token
 	if len(authToken) == 0 {
