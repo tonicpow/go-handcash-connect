@@ -34,13 +34,14 @@ type AttachmentFormat string
 // AttachmentFormat enum
 const (
 	AttachmentFormatBase64 AttachmentFormat = "base64"
+	AttachmentFormatHex    AttachmentFormat = "hex"
 	AttachmentFormatJSON   AttachmentFormat = "json"
 )
 
 // Attachment is for additional data
 type Attachment struct {
-	Format AttachmentFormat  `json:"format"`
-	Value  map[string]string `json:"value"`
+	Format AttachmentFormat  `json:"format,omitempty"`
+	Value  map[string]string `json:"value,omitempty"`
 }
 
 // Payment is used by PayParameters
@@ -52,10 +53,10 @@ type Payment struct {
 
 // PayParameters is used by Pay()
 type PayParameters struct {
-	Description string `json:"description,omitempty"`
-	AppAction   AppAction
+	Description string     `json:"description,omitempty"`
+	AppAction   AppAction  `json:"appAction,omitempty"`
 	Attachment  Attachment `json:"attachment,omitempty"`
-	Payments    []Payment
+	Payments    []Payment  `json:"payments,omitempty"`
 }
 
 // PaymentType enum
