@@ -172,15 +172,22 @@ func Pay(authToken string, payParams PayParameters) (payResponse *PaymentRespons
 	// Get the signed request
 	var signedRequest *api.SignedRequest
 
-	signedRequest, err = api.GetSignedRequest(http.MethodPost, "/v1/connect/wallet/pay", sanitize.AlphaNumeric(authToken, false), payParams, utils.ISOTimestamp())
-	if err != nil {
+	if signedRequest, err = api.GetSignedRequest(
+		http.MethodPost,
+		"/v1/connect/wallet/pay",
+		sanitize.AlphaNumeric(authToken, false),
+		payParams,
+		utils.ISOTimestamp(),
+	); err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)
 	}
 
 	// Start the Request
 	var request *http.Request
-	payParamsBytes, err := json.Marshal(payParams)
-	if request, err = http.NewRequestWithContext(context.Background(), signedRequest.Method, signedRequest.URI, bytes.NewBuffer(payParamsBytes)); err != nil {
+	var payParamsBytes []byte
+	payParamsBytes, err = json.Marshal(payParams)
+	if request, err = http.NewRequestWithContext(context.Background(),
+		signedRequest.Method, signedRequest.URI, bytes.NewBuffer(payParamsBytes)); err != nil {
 		return nil, fmt.Errorf("error creating new request: %w", err)
 	}
 
@@ -206,13 +213,13 @@ func Pay(authToken string, payParams PayParameters) (payResponse *PaymentRespons
 		return nil, fmt.Errorf("failed reading the body: %w", err)
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		errorMsg := new(errorResponse)
 		if err = json.Unmarshal(body, &errorMsg); err != nil {
 			return nil, fmt.Errorf("failed unmarshal error: %w", err)
 		}
 
-		return nil, fmt.Errorf("Bad response: %s %s %s %+v", errorMsg.Message, authToken, request.RequestURI, signedRequest)
+		return nil, fmt.Errorf("bad response: %s %s %s %+v", errorMsg.Message, authToken, request.RequestURI, signedRequest)
 	}
 
 	payResponse = new(PaymentResponse)
@@ -222,7 +229,7 @@ func Pay(authToken string, payParams PayParameters) (payResponse *PaymentRespons
 	} else if payResponse == nil {
 		return nil, fmt.Errorf("failed to pay: %w", err)
 	} else if payResponse.TransactionID == "" {
-		return nil, fmt.Errorf("Bad response from handcash API. Invalid Transaction ID %s", payResponse.TransactionID)
+		return nil, fmt.Errorf("bad response from handcash API. Invalid Transaction ID %s", payResponse.TransactionID)
 	}
 
 	return

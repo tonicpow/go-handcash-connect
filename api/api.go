@@ -33,8 +33,8 @@ func GetRequestSignature(method string, endpoint string, body interface{}, times
 		return nil, err
 	}
 	hash := sha256.Sum256([]byte(signatureHash))
-	sig, err := privateKey.Sign(hash[:])
-	if err != nil {
+	var sig *bsvec.Signature
+	if sig, err = privateKey.Sign(hash[:]); err != nil {
 		return nil, err
 	}
 	return sig.Serialize(), nil
@@ -42,18 +42,16 @@ func GetRequestSignature(method string, endpoint string, body interface{}, times
 
 // GetRequestSignatureHash will return the signature hash
 func GetRequestSignatureHash(method string, endpoint string, body interface{}, timestamp string) (string, error) {
-	var bodyString string
-	if body == nil {
-		bodyString = "{}"
-	} else {
+	// var bodyString string
+	bodyString := "{}"
+	if body != nil {
 		bodyBytes, err := json.Marshal(body)
 		if err != nil {
-			return "", fmt.Errorf("Failed to marshal body %w", err)
+			return "", fmt.Errorf("failed to marshal body %w", err)
 		}
 		bodyString = fmt.Sprintf("%s", bodyBytes)
 	}
-	sigHash := fmt.Sprintf("%s\n%s\n%s\n%s", method, endpoint, timestamp, bodyString)
-	return sigHash, nil
+	return fmt.Sprintf("%s\n%s\n%s\n%s", method, endpoint, timestamp, bodyString), nil
 }
 
 // GetSignedRequest returns the request with signature

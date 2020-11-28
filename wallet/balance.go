@@ -22,13 +22,13 @@ func GetBalance(authToken string) (balanceResponse *BalanceResponse, err error) 
 		return nil, fmt.Errorf("missing auth token")
 	}
 
-	// TODO: The actuaL REQUEST
+	// TODO: The actual request
 
 	balanceResponse = new(BalanceResponse)
 
 	err = json.Unmarshal([]byte("dummy"), balanceResponse)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to get balance %w", err)
+		return nil, fmt.Errorf("failed to get balance %w", err)
 	}
 
 	return

@@ -3,7 +3,7 @@ package config
 // CurrencyCode is an enum for supported currencies
 type CurrencyCode string
 
-// CurrenyCode enum
+// CurrencyCode enum
 const (
 	CurrencyARS CurrencyCode = "ARS"
 	CurrencyAUD CurrencyCode = "AUD"

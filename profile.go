@@ -93,13 +93,13 @@ func GetProfile(authToken string) (user *User, err error) {
 		return nil, fmt.Errorf("failed reading the body: %w", err)
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		errorMsg := new(errorResponse)
 		if err = json.Unmarshal(body, &errorMsg); err != nil {
 			return nil, fmt.Errorf("failed unmarshal error: %w", err)
 		}
 
-		return nil, fmt.Errorf("Bad response: %s %s %s %+v", errorMsg.Message, authToken, request.RequestURI, signedRequest)
+		return nil, fmt.Errorf("bad response: %s %s %s %+v", errorMsg.Message, authToken, request.RequestURI, signedRequest)
 	}
 
 	user = new(User)
