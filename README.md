@@ -38,10 +38,15 @@ View the generated [documentation](https://pkg.go.dev/github.com/tonicpow/go-han
 
 ### Features
 - Current coverage for the [HandCash Connect SDK](https://handcash.github.io/handcash-connect-sdk-js-beta-docs/#/)
-    - [x] GetProfile
-    - [ ] GetBalance
-    - [ ] GetPayRequest
-
+  - [x] GetProfile
+  - [x] Pay
+  - [x] GetPayment
+  - [ ] GetEncryptionKeypair
+  - [ ] GetFriends
+  - [ ] GetPermissions
+  - [ ] GetPublicProfiles
+  - [ ] GetSpendableBalance
+  - [ ] SignData
 
 <details>
 <summary><strong><code>Library Deployment</code></strong></summary>
@@ -112,7 +117,7 @@ make test-short
 <br/>
 
 ## Benchmarks
-Run the Go [benchmarks](handcash_test.go):
+Run the Go [benchmarks](client_test.go):
 ```shell script
 make bench
 ```
@@ -125,7 +130,7 @@ Read more about this Go project's [code standards](CODE_STANDARDS.md).
 <br/>
 
 ## Usage
-View the [examples](handcash_test.go)
+View the [examples](examples)
  
 <br/>
 
