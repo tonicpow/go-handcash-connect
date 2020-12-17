@@ -84,6 +84,7 @@ func (m *mockHTTPInvalidProfileData) Do(req *http.Request) (*http.Response, erro
 }
 
 func TestClient_GetProfile(t *testing.T) {
+	t.Parallel()
 
 	t.Run("missing auth token", func(t *testing.T) {
 		client := newTestClient(&mockHTTPGetProfile{}, EnvironmentBeta)

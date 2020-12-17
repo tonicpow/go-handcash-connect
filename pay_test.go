@@ -34,6 +34,8 @@ func (m *mockHTTPPay) Do(req *http.Request) (*http.Response, error) {
 }
 
 func TestClient_Pay(t *testing.T) {
+	t.Parallel()
+
 	t.Run("missing auth token", func(t *testing.T) {
 		client := newTestClient(&mockHTTPPay{}, EnvironmentBeta)
 		assert.NotNil(t, client)

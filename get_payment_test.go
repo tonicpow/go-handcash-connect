@@ -53,6 +53,7 @@ func (m *mockHTTPInvalidPaymentData) Do(req *http.Request) (*http.Response, erro
 }
 
 func TestClient_GetPayment(t *testing.T) {
+	t.Parallel()
 
 	t.Run("missing auth token", func(t *testing.T) {
 		client := newTestClient(&mockHTTPGetPayment{}, EnvironmentBeta)
