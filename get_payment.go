@@ -87,7 +87,7 @@ func (c *Client) GetPayment(ctx context.Context, authToken,
 	if err = json.Unmarshal(response.BodyContents, &paymentResponse); err != nil {
 		return nil, fmt.Errorf("failed unmarshal: %w", err)
 	} else if paymentResponse == nil || paymentResponse.TransactionID == "" {
-		return nil, fmt.Errorf("failed to find payment: %w", err)
+		return nil, fmt.Errorf("failed to find payment")
 	}
 	return paymentResponse, nil
 }

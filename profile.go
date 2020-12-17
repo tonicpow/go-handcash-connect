@@ -69,7 +69,7 @@ func (c *Client) GetProfile(ctx context.Context, authToken string) (*Profile, er
 	if err = json.Unmarshal(response.BodyContents, &profile); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal: %w", err)
 	} else if profile == nil || profile.PublicProfile.ID == "" {
-		return nil, fmt.Errorf("failed to find profile: %w", err)
+		return nil, fmt.Errorf("failed to find profile")
 	}
 	return profile, nil
 }

@@ -65,17 +65,18 @@ type Participant struct {
 
 // PaymentResponse is returned from the GetPayment function
 type PaymentResponse struct {
-	AppAction        AppAction      `json:"appAction"`
-	Attachments      []*Attachment  `json:"attachments"`
-	FiatCurrencyCode CurrencyCode   `json:"fiatCurrencyCode"`
-	FiatExchangeRate float64        `json:"fiatExchangeRate"`
-	Note             string         `json:"note"`
-	Participants     []*Participant `json:"participants"`
-	SatoshiAmount    uint64         `json:"satoshiAmount"`
-	SatoshiFees      uint64         `json:"satoshiFees"`
-	Time             uint64         `json:"time"`
-	TransactionID    string         `json:"transactionId"`
-	Type             PaymentType    `json:"type"`
+	AppAction         AppAction      `json:"appAction"`
+	Attachments       []*Attachment  `json:"attachments"`
+	FiatCurrencyCode  CurrencyCode   `json:"fiatCurrencyCode"`
+	FiatExchangeRate  float64        `json:"fiatExchangeRate"`
+	Note              string         `json:"note"`
+	Participants      []*Participant `json:"participants"`
+	RawTransactionHex string         `json:"rawTransactionHex,omitempty"`
+	SatoshiAmount     uint64         `json:"satoshiAmount"`
+	SatoshiFees       uint64         `json:"satoshiFees"`
+	Time              uint64         `json:"time"`
+	TransactionID     string         `json:"transactionId"`
+	Type              PaymentType    `json:"type"`
 }
 
 // PaymentRequest is used for GetPayment()
@@ -122,7 +123,7 @@ type PayParameters struct {
 	AppAction   AppAction   `json:"appAction,omitempty"`
 	Attachment  *Attachment `json:"attachment,omitempty"`
 	Description string      `json:"description,omitempty"`
-	Receivers   []Payment   `json:"receivers,omitempty"`
+	Receivers   []*Payment  `json:"receivers,omitempty"`
 }
 
 // PaymentType enum

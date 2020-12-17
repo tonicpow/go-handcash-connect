@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"os"
 
@@ -13,11 +14,20 @@ func main() {
 	// Create a new client (Beta ENV)
 	client := handcash.NewClient(nil, nil, handcash.EnvironmentBeta)
 
+	// Example attachment (Optional)
+	attachmentPayload := `{"some":"data"}`
+	dynamic := make(map[string]interface{})
+	_ = json.Unmarshal([]byte(attachmentPayload), &dynamic)
+
 	// Payment parameters
 	params := &handcash.PayParameters{
 		AppAction:   handcash.AppActionLike,
 		Description: "Thanks dude!",
-		Receivers: []handcash.Payment{{
+		Attachment: &handcash.Attachment{
+			Format: handcash.AttachmentFormatJSON,
+			Value:  dynamic,
+		},
+		Receivers: []*handcash.Payment{{
 			Amount:       0.01,
 			CurrencyCode: handcash.CurrencyUSD,
 			To:           "mrz@moneybutton.com",

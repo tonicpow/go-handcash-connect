@@ -97,7 +97,7 @@ func ExampleNewClient() {
 	client := NewClient(nil, nil, EnvironmentIAE)
 
 	fmt.Printf("created new client: %s", client.Options.UserAgent)
-	// Output:created new client: go-handcash-connect: v0.0.6
+	// Output:created new client: go-handcash-connect: v0.1.0
 }
 
 // BenchmarkNewClient benchmarks the method NewClient()

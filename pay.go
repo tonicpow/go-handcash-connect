@@ -7,7 +7,41 @@ import (
 	"net/http"
 )
 
-// Pay gets a payment request from the handcash connect API
+/*
+{
+  "transactionId": "05d7df52a1c58cabada16709469e6940342cb13e8cfa3c7e1438d7ea84765787",
+  "note": "Thanks dude!",
+  "type": "send",
+  "time": 1608226019,
+  "satoshiFees": 127,
+  "satoshiAmount": 5372,
+  "fiatExchangeRate": 186.15198556884275,
+  "fiatCurrencyCode": "USD",
+  "participants": [
+    {
+      "type": "user",
+      "alias": "mrz@moneybutton.com",
+      "displayName": "MrZ",
+      "profilePictureUrl": "https://www.gravatar.com/avatar/372bc0ab9b8a8930d4a86b2c5b11f11e?d=identicon",
+      "responseNote": ""
+    }
+  ],
+  "attachments": [
+    {
+      "value": {
+        "some": "data"
+      },
+      "format": "json"
+    }
+  ],
+  "appAction": "like",
+  "rawTransactionHex": "01000000018598fbea559e4a59772361994f800adb63bab592e276de7ebd5805ecc639b3b8010000006a47304402200fc98489e2bbba5cb7f8cea970c0037585d42618ef60d172179307b4446854a802206be468ffd31f97c6e01a6549be50241d42633e32ba4e06ff4b2565ec897232a2412103c1fbc71737d3820890535112ac99b2471d6bacbd8a7e7825c65863a67b1d0c7effffffff03000000000000000012006a0f7b22736f6d65223a2264617461227dfc140000000000001976a914b7ce7a4c1350f1cb9dcaecca10d48f064be9197f88ac57020000000000001976a9145233794b8bdf2fd7f809b11da081189d2e79000c88ac00000000"
+}
+*/
+
+// Pay makes a new payment request to the HandCash Connect API
+//
+// Specs: https://github.com/HandCash/handcash-connect-sdk-js/blob/master/src/api/http_request_factory.js
 func (c *Client) Pay(ctx context.Context, authToken string,
 	payParams *PayParameters) (*PaymentResponse, error) {
 
@@ -57,52 +91,12 @@ func (c *Client) Pay(ctx context.Context, authToken string,
 		return nil, response.Error
 	}
 
-	/*// Start the Request
-	var request *http.Request
-	var payParamsBytes []byte
-	payParamsBytes, err = json.Marshal(payParams)
-	if request, err = http.NewRequestWithContext(context.Background(),
-		signedRequest.Method, signedRequest.URI, bytes.NewBuffer(payParamsBytes)); err != nil {
-		return nil, fmt.Errorf("error creating new request: %w", err)
-	}
-
-	// Set oAuth headers
-	request.Header.Set("oauth-publickey", signedRequest.Headers.OauthPublicKey)
-	request.Header.Set("oauth-signature", signedRequest.Headers.OauthSignature)
-	request.Header.Set("oauth-timestamp", signedRequest.Headers.OauthTimestamp)
-
-	// Fire the http Request
-	var resp *http.Response
-	if resp, err = http.DefaultClient.Do(request); err != nil {
-		return nil, fmt.Errorf("failed doing http request: %w", err)
-	}
-
-	// Close the response body
-	defer func() {
-		_ = resp.Body.Close()
-	}()
-
-	// Read the body
-	var body []byte
-	if body, err = ioutil.ReadAll(resp.Body); err != nil {
-		return nil, fmt.Errorf("failed reading the body: %w", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		errorMsg := new(errorResponse)
-		if err = json.Unmarshal(body, &errorMsg); err != nil {
-			return nil, fmt.Errorf("failed unmarshal error: %w", err)
-		}
-
-		return nil, fmt.Errorf("bad response: %s %s %s %+v", errorMsg.Message, authToken, request.RequestURI, signedRequest)
-	}*/
-
 	// Unmarshal pay response
 	paymentResponse := new(PaymentResponse)
 	if err = json.Unmarshal(response.BodyContents, &paymentResponse); err != nil {
 		return nil, fmt.Errorf("failed unmarshal: %w", err)
 	} else if paymentResponse == nil || paymentResponse.TransactionID == "" {
-		return nil, fmt.Errorf("failed to payment response: %w", err)
+		return nil, fmt.Errorf("failed to make payment")
 	}
 	return paymentResponse, nil
 }
