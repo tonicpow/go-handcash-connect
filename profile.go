@@ -27,7 +27,7 @@ import (
 // GetProfile will get the profile for the associated auth token
 //
 // Specs: https://github.com/HandCash/handcash-connect-sdk-js/blob/master/src/profile/index.js
-func (c *Client) GetProfile(ctx context.Context, authToken string) (*User, error) {
+func (c *Client) GetProfile(ctx context.Context, authToken string) (*Profile, error) {
 
 	// Make sure we have an auth token
 	if len(authToken) == 0 {
@@ -53,7 +53,7 @@ func (c *Client) GetProfile(ctx context.Context, authToken string) (*User, error
 		&httpPayload{
 			Data:           []byte(emptyBody),
 			ExpectedStatus: http.StatusOK,
-			Method:         http.MethodGet,
+			Method:         signed.Method,
 			URL:            signed.URI,
 		},
 		signed,
@@ -64,11 +64,12 @@ func (c *Client) GetProfile(ctx context.Context, authToken string) (*User, error
 		return nil, response.Error
 	}
 
-	user := new(User)
-	if err = json.Unmarshal(response.BodyContents, &user); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal user: %w", err)
-	} else if user == nil || user.PublicProfile.ID == "" {
-		return nil, fmt.Errorf("failed to find a user: %w", err)
+	// Unmarshal into the profile
+	profile := new(Profile)
+	if err = json.Unmarshal(response.BodyContents, &profile); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal: %w", err)
+	} else if profile == nil || profile.PublicProfile.ID == "" {
+		return nil, fmt.Errorf("failed to find profile: %w", err)
 	}
-	return user, nil
+	return profile, nil
 }

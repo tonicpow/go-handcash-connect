@@ -44,7 +44,9 @@ func httpRequest(ctx context.Context, client *Client,
 		response.PostData = string(payload.Data)
 	} else if payload.Method == http.MethodGet {
 		// HandCash requires data even on a GET request (DO NOT REMOVE)
-		bodyReader = bytes.NewBuffer(payload.Data) // empty: {}
+		if len(payload.Data) > 0 {
+			bodyReader = bytes.NewBuffer(payload.Data) // empty: {}
+		}
 	}
 
 	// Store for debugging purposes
@@ -60,7 +62,7 @@ func httpRequest(ctx context.Context, client *Client,
 	}
 
 	// Change the header (user agent is in case they block default Go user agents)
-	request.Header.Set("User-Agent", client.Options.UserAgent)
+	request.Header.Set("Profile-Agent", client.Options.UserAgent)
 
 	// Set the content type on Method
 	if payload.Method == http.MethodPost || payload.Method == http.MethodPut {

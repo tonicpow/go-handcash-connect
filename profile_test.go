@@ -83,20 +83,22 @@ func (m *mockHTTPInvalidProfileData) Do(req *http.Request) (*http.Response, erro
 	return resp, nil
 }
 
-func TestGetProfile(t *testing.T) {
+func TestClient_GetProfile(t *testing.T) {
 
 	t.Run("missing auth token", func(t *testing.T) {
 		client := newTestClient(&mockHTTPGetProfile{}, EnvironmentBeta)
 		assert.NotNil(t, client)
-		_, err := client.GetProfile(context.Background(), "")
+		profile, err := client.GetProfile(context.Background(), "")
 		assert.Error(t, err)
+		assert.Nil(t, profile)
 	})
 
 	t.Run("invalid auth token", func(t *testing.T) {
 		client := newTestClient(&mockHTTPGetProfile{}, EnvironmentBeta)
 		assert.NotNil(t, client)
-		_, err := client.GetProfile(context.Background(), "0")
+		profile, err := client.GetProfile(context.Background(), "0")
 		assert.Error(t, err)
+		assert.Nil(t, profile)
 	})
 
 	t.Run("valid auth token (hex decodes) (beta)", func(t *testing.T) {
@@ -147,8 +149,9 @@ func TestGetProfile(t *testing.T) {
 	t.Run("bad request", func(t *testing.T) {
 		client := newTestClient(&mockHTTPBadRequest{}, EnvironmentBeta)
 		assert.NotNil(t, client)
-		_, err := client.GetProfile(context.Background(), "000000")
+		profile, err := client.GetProfile(context.Background(), "000000")
 		assert.Error(t, err)
+		assert.Nil(t, profile)
 	})
 
 	t.Run("invalid profile data", func(t *testing.T) {

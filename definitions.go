@@ -32,8 +32,8 @@ const (
 	CurrencyZAR CurrencyCode = "ZAR"
 )
 
-// User are the user fields returned by the public and private profile endpoints
-type User struct {
+// Profile are the user fields returned by the public and private profile endpoints
+type Profile struct {
 	PublicProfile  PublicProfile  `json:"publicProfile"`
 	PrivateProfile PrivateProfile `json:"privateProfile"`
 }
@@ -65,16 +65,17 @@ type Participant struct {
 
 // PaymentResponse is returned from the GetPayment function
 type PaymentResponse struct {
-	AppAction        AppAction     `json:"appAction"`
-	Attachments      []Attachment  `json:"attachments"`
-	FiatCurrencyCode CurrencyCode  `json:"fiatCurrencyCode"`
-	FiatExchangeRate float64       `json:"fiatExchangeRate"`
-	Participants     []Participant `json:"participants"`
-	SatoshiAmount    uint64        `json:"satoshiAmount"`
-	SatoshiFees      uint64        `json:"satoshiFees"`
-	Time             uint64        `json:"time"`
-	TransactionID    string        `json:"transactionId"`
-	Type             PaymentType   `json:"type"`
+	AppAction        AppAction      `json:"appAction"`
+	Attachments      []*Attachment  `json:"attachments"`
+	FiatCurrencyCode CurrencyCode   `json:"fiatCurrencyCode"`
+	FiatExchangeRate float64        `json:"fiatExchangeRate"`
+	Note             string         `json:"note"`
+	Participants     []*Participant `json:"participants"`
+	SatoshiAmount    uint64         `json:"satoshiAmount"`
+	SatoshiFees      uint64         `json:"satoshiFees"`
+	Time             uint64         `json:"time"`
+	TransactionID    string         `json:"transactionId"`
+	Type             PaymentType    `json:"type"`
 }
 
 // PaymentRequest is used for GetPayment()
@@ -89,6 +90,7 @@ type AppAction string
 const (
 	AppActionLike     AppAction = "like"
 	AppActionPublish  AppAction = "publish"
+	AppActionTip      AppAction = "tip"
 	AppActionTipGroup AppAction = "tip-group"
 )
 
@@ -104,23 +106,23 @@ const (
 
 // Attachment is for additional data
 type Attachment struct {
-	Format AttachmentFormat  `json:"format,omitempty"`
-	Value  map[string]string `json:"value,omitempty"`
+	Format AttachmentFormat `json:"format,omitempty"`
+	Value  interface{}      `json:"value,omitempty"`
 }
 
 // Payment is used by PayParameters
 type Payment struct {
-	Destination  string
-	CurrencyCode CurrencyCode
-	SendAmount   float64
+	Amount       float64      `json:"amount"`
+	CurrencyCode CurrencyCode `json:"currencyCode"`
+	To           string       `json:"to"`
 }
 
 // PayParameters is used by Pay()
 type PayParameters struct {
-	AppAction   AppAction  `json:"appAction,omitempty"`
-	Attachment  Attachment `json:"attachment,omitempty"`
-	Description string     `json:"description,omitempty"`
-	Payments    []Payment  `json:"payments,omitempty"`
+	AppAction   AppAction   `json:"appAction,omitempty"`
+	Attachment  *Attachment `json:"attachment,omitempty"`
+	Description string      `json:"description,omitempty"`
+	Receivers   []Payment   `json:"receivers,omitempty"`
 }
 
 // PaymentType enum
@@ -136,7 +138,7 @@ type ParticipantType string
 
 // ParticipantType enum
 const (
-	ParticipantUser = "user"
+	ParticipantUser ParticipantType = "user"
 )
 
 // oAuthHeaders are used for signed requests
