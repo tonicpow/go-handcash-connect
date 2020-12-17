@@ -1,19 +1,14 @@
-package wallet
+package handcash
 
-import (
-	"encoding/json"
-	"fmt"
-
-	"github.com/tonicpow/go-handcash-connect/config"
-)
-
+/*
 // BalanceResponse is the balance response
 type BalanceResponse struct {
-	SpendableSatoshiBalance uint64              `json:"spendableSatoshiBalance"`
-	SpendableFiatBalance    float64             `json:"spendableFiatBalance"`
-	CurrencyCode            config.CurrencyCode `json:"currencyCode"`
-}
+	SpendableSatoshiBalance uint64       `json:"spendableSatoshiBalance"`
+	SpendableFiatBalance    float64      `json:"spendableFiatBalance"`
+	CurrencyCode            CurrencyCode `json:"currencyCode"`
+}*/
 
+/*
 // GetBalance gets the user's balance from the handcash connect API
 func GetBalance(authToken string) (balanceResponse *BalanceResponse, err error) {
 
@@ -33,3 +28,4 @@ func GetBalance(authToken string) (balanceResponse *BalanceResponse, err error) 
 
 	return
 }
+*/

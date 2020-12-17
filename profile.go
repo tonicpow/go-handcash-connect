@@ -1,53 +1,19 @@
 package handcash
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/mrz1836/go-sanitize"
-	"github.com/tonicpow/go-handcash-connect/api"
-	"github.com/tonicpow/go-handcash-connect/utils"
 )
 
-type requestBody struct {
-	authToken string
-}
-
-type errorResponse struct {
-	Message string `json:"message"`
-}
-
-// User are the user fields returned by the public and private profile endpoints
-type User struct {
-	PublicProfile  PublicProfile  `json:"publicProfile"`
-	PrivateProfile PrivateProfile `json:"privateProfile"`
-}
-
-// PublicProfile is the public profile
-type PublicProfile struct {
-	AvatarURL         string `json:"avatarUrl"`
-	DisplayName       string `json:"displayName"`
-	Handle            string `json:"handle"`
-	Paymail           string `json:"paymail"`
-	ID                string `json:"id"`
-	LocalCurrencyCode string `json:"localCurrencyCode"`
-}
-
-// TODO: Spendable balance was made its own request
-// SpendableBalance  int64  `json:"spendableBalance"`
-
-// PrivateProfile is the private profile
-type PrivateProfile struct {
-	Email       string `json:"email"`
-	PhoneNumber string `json:"phoneNumber"`
-}
-
-// GetProfile will get the profile
-func GetProfile(authToken string) (user *User, err error) {
+// GetProfile will get the profile for the associated auth token
+//
+// Specs: https://github.com/HandCash/handcash-connect-sdk-js/blob/master/src/profile/index.js
+func (c *Client) GetProfile(ctx context.Context, authToken string) (user *User, err error) {
 
 	// Make sure we have an auth token
 	if len(authToken) == 0 {
@@ -55,19 +21,53 @@ func GetProfile(authToken string) (user *User, err error) {
 	}
 
 	// Get the signed request
-	var signedRequest *api.SignedRequest
-	signedRequest, err = api.GetSignedRequest(http.MethodGet, "/v1/connect/profile/currentUserProfile", authToken, &requestBody{
-		authToken: sanitize.AlphaNumeric(authToken, false),
-	}, utils.ISOTimestamp())
-
-	if err != nil {
+	var signed *signedRequest
+	if signed, err = c.getSignedRequest(
+		http.MethodGet,
+		endpointProfileCurrent,
+		authToken,
+		&requestBody{authToken: sanitize.AlphaNumeric(authToken, false)},
+		currentISOTimestamp(),
+	); err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)
 	}
 
-	// Start the Request
+	log.Println(currentISOTimestamp())
+	log.Println(endpointProfileCurrent)
+	log.Println(signed.Method)
+	log.Println(signed.URI)
+	log.Println(signed.Body)
+	log.Println(signed.Headers.OauthSignature)
+	log.Println(signed.Headers.OauthPublicKey)
+	log.Println(signed.URI)
+
+	// Make the HTTP request
+	response := httpRequest(
+		ctx,
+		c,
+		&httpPayload{
+			ExpectedStatus: http.StatusOK,
+			Method:         http.MethodGet,
+			URL:            signed.URI,
+			Data:           []byte(emptyBody),
+		},
+		signed,
+	)
+
+	// Error in request?
+	if response.Error != nil {
+		err = response.Error
+		return
+	}
+
+	/*// Start the Request
 	var request *http.Request
-	jsonValue := []byte(`{}`)
-	if request, err = http.NewRequestWithContext(context.Background(), signedRequest.Method, signedRequest.URI, bytes.NewBuffer(jsonValue)); err != nil {
+	if request, err = http.NewRequestWithContext(
+		ctx,
+		signedRequest.Method,
+		signedRequest.URI,
+		bytes.NewBuffer([]byte(emptyBody)),
+	); err != nil {
 		return nil, fmt.Errorf("error creating new request: %w", err)
 	}
 
@@ -100,16 +100,16 @@ func GetProfile(authToken string) (user *User, err error) {
 		}
 
 		return nil, fmt.Errorf("bad response: %s %s %s %+v", errorMsg.Message, authToken, request.RequestURI, signedRequest)
-	}
+	}*/
 
-	user = new(User)
-
-	if err = json.Unmarshal(body, &user); err != nil {
-		return nil, fmt.Errorf("failed unmarshal HandCash user: %w", err)
-	} else if user == nil {
-		return nil, fmt.Errorf("failed to find a HandCash user in context: %w", err)
-	} else if len(user.PrivateProfile.Email) == 0 {
-		return nil, fmt.Errorf("failed to find an email address for HandCash user: %+v", user)
+	newUser := new(User)
+	if err = json.Unmarshal(response.BodyContents, &newUser); err != nil {
+		err = fmt.Errorf("failed to unmarshal user: %w", err)
+		return
+	} else if newUser == nil {
+		err = fmt.Errorf("failed to find a user: %w", err)
+		return
 	}
+	user = newUser
 	return
 }

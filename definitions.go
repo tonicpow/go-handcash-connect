@@ -1,0 +1,134 @@
+package handcash
+
+// User are the user fields returned by the public and private profile endpoints
+type User struct {
+	PublicProfile  PublicProfile  `json:"publicProfile"`
+	PrivateProfile PrivateProfile `json:"privateProfile"`
+}
+
+// PublicProfile is the public profile
+type PublicProfile struct {
+	AvatarURL         string `json:"avatarUrl"`
+	DisplayName       string `json:"displayName"`
+	Handle            string `json:"handle"`
+	ID                string `json:"id"`
+	LocalCurrencyCode string `json:"localCurrencyCode"`
+	Paymail           string `json:"paymail"`
+}
+
+// PrivateProfile is the private profile
+type PrivateProfile struct {
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
+}
+
+// Participant is used for payments
+type Participant struct {
+	Alias             string          `json:"alias"`
+	DisplayName       string          `json:"displayName"`
+	ProfilePictureURL string          `json:"profilePictureUrl"`
+	ResponseNote      string          `json:"responseNote"`
+	Type              ParticipantType `json:"type"`
+}
+
+// PaymentResponse is returned from the GetPayment function
+type PaymentResponse struct {
+	AppAction        AppAction     `json:"appAction"`
+	Attachments      []Attachment  `json:"attachments"`
+	FiatCurrencyCode CurrencyCode  `json:"fiatCurrencyCode"`
+	FiatExchangeRate float64       `json:"fiatExchangeRate"`
+	Participants     []Participant `json:"participants"`
+	SatoshiAmount    uint64        `json:"satoshiAmount"`
+	SatoshiFees      uint64        `json:"satoshiFees"`
+	Time             uint64        `json:"time"`
+	TransactionID    string        `json:"transactionId"`
+	Type             PaymentType   `json:"type"`
+}
+
+// PaymentRequest is used for GetPayment()
+type PaymentRequest struct {
+	TransactionID string `json:"transactionId"`
+}
+
+// AppAction enum
+type AppAction string
+
+// AppAction enum
+const (
+	AppActionLike     AppAction = "like"
+	AppActionPublish  AppAction = "publish"
+	AppActionTipGroup AppAction = "tip-group"
+)
+
+// AttachmentFormat enum
+type AttachmentFormat string
+
+// AttachmentFormat enum
+const (
+	AttachmentFormatBase64 AttachmentFormat = "base64"
+	AttachmentFormatHex    AttachmentFormat = "hex"
+	AttachmentFormatJSON   AttachmentFormat = "json"
+)
+
+// Attachment is for additional data
+type Attachment struct {
+	Format AttachmentFormat  `json:"format,omitempty"`
+	Value  map[string]string `json:"value,omitempty"`
+}
+
+// Payment is used by PayParameters
+type Payment struct {
+	Destination  string
+	CurrencyCode CurrencyCode
+	SendAmount   float64
+}
+
+// PayParameters is used by Pay()
+type PayParameters struct {
+	AppAction   AppAction  `json:"appAction,omitempty"`
+	Attachment  Attachment `json:"attachment,omitempty"`
+	Description string     `json:"description,omitempty"`
+	Payments    []Payment  `json:"payments,omitempty"`
+}
+
+// PaymentType enum
+type PaymentType string
+
+// PaymentType enum
+const (
+	PaymentSend PaymentType = "send"
+)
+
+// ParticipantType enum
+type ParticipantType string
+
+// ParticipantType enum
+const (
+	ParticipantUser = "user"
+)
+
+// oAuthHeaders are used for signed requests
+type oAuthHeaders struct {
+	OauthPublicKey string `json:"oauth-publickey"`
+	OauthSignature string `json:"oauth-signature"`
+	OauthTimestamp string `json:"oauth-timestamp"`
+}
+
+// signedRequest is used to communicate with HandCash Connect API
+type signedRequest struct {
+	Body    interface{}  `json:"body"`
+	Headers oAuthHeaders `json:"headers"`
+	JSON    bool         `json:"json"`
+	Method  string       `json:"method"`
+	URI     string       `json:"uri"`
+}
+
+// requestBody is for constructing the request
+type requestBody struct {
+	authToken string
+}
+
+// errorResponse is the error response
+type errorResponse struct {
+	Message string `json:"message"`
+}

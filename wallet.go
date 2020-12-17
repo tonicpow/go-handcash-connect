@@ -1,4 +1,4 @@
-package wallet
+package handcash
 
 import (
 	"bytes"
@@ -9,102 +9,10 @@ import (
 	"net/http"
 
 	"github.com/mrz1836/go-sanitize"
-	"github.com/tonicpow/go-handcash-connect/api"
-	"github.com/tonicpow/go-handcash-connect/config"
-	"github.com/tonicpow/go-handcash-connect/utils"
 )
-
-type errorResponse struct {
-	Message string `json:"message"`
-}
-
-// AppAction enum
-type AppAction string
-
-// AppAction enum
-const (
-	AppActionTipGroup AppAction = "tip-group"
-	AppActionPublish  AppAction = "publish"
-	AppActionLike     AppAction = "like"
-)
-
-// AttachmentFormat enum
-type AttachmentFormat string
-
-// AttachmentFormat enum
-const (
-	AttachmentFormatBase64 AttachmentFormat = "base64"
-	AttachmentFormatHex    AttachmentFormat = "hex"
-	AttachmentFormatJSON   AttachmentFormat = "json"
-)
-
-// Attachment is for additional data
-type Attachment struct {
-	Format AttachmentFormat  `json:"format,omitempty"`
-	Value  map[string]string `json:"value,omitempty"`
-}
-
-// Payment is used by PayParameters
-type Payment struct {
-	Destination  string
-	CurrencyCode config.CurrencyCode
-	SendAmount   float64
-}
-
-// PayParameters is used by Pay()
-type PayParameters struct {
-	Description string     `json:"description,omitempty"`
-	AppAction   AppAction  `json:"appAction,omitempty"`
-	Attachment  Attachment `json:"attachment,omitempty"`
-	Payments    []Payment  `json:"payments,omitempty"`
-}
-
-// PaymentType enum
-type PaymentType string
-
-// PaymentType enum
-const (
-	PaymentSend PaymentType = "send"
-)
-
-// ParticipantType enum
-type ParticipantType string
-
-// ParticipantType enum
-const (
-	ParticipantUser = "user"
-)
-
-// Participant is used for payments
-type Participant struct {
-	Type              ParticipantType `json:"type"`
-	Alias             string          `json:"alias"`
-	DisplayName       string          `json:"displayName"`
-	ProfilePictureURL string          `json:"profilePictureUrl"`
-	ResponseNote      string          `json:"responseNote"`
-}
-
-// PaymentResponse is returned from the GetPayment function
-type PaymentResponse struct {
-	TransactionID    string              `json:"transactionId"`
-	Type             PaymentType         `json:"type"`
-	Time             uint64              `json:"time"`
-	SatoshiFees      uint64              `json:"satoshiFees"`
-	SatoshiAmount    uint64              `json:"satoshiAmount"`
-	FiatExchangeRate float64             `json:"fiatExchangeRate"`
-	FiatCurrencyCode config.CurrencyCode `json:"fiatCurrencyCode"`
-	Participants     []Participant       `json:"participants"`
-	Attachments      []Attachment        `json:"attachments"`
-	AppAction        AppAction           `json:"appAction"`
-}
-
-// PaymentRequest is used for GetPayment()
-type PaymentRequest struct {
-	TransactionID string `json:"transactionId"`
-}
 
 // GetPayment fetches a payment by txid
-func GetPayment(authToken string, transactionID string) (payResponse *PaymentResponse, err error) {
+func (c *Client) GetPayment(authToken string, transactionID string) (payResponse *PaymentResponse, err error) {
 
 	// Make sure we have an auth token
 	if len(authToken) == 0 {
@@ -112,10 +20,10 @@ func GetPayment(authToken string, transactionID string) (payResponse *PaymentRes
 	}
 
 	// Get the signed request
-	var signedRequest *api.SignedRequest
-	signedRequest, err = api.GetSignedRequest(http.MethodGet, "/v1/connect/wallet/payment", authToken, &PaymentRequest{
+	var signedRequest *signedRequest
+	signedRequest, err = c.getSignedRequest(http.MethodGet, "/v1/connect/wallet/payment", authToken, &PaymentRequest{
 		TransactionID: transactionID,
-	}, utils.ISOTimestamp())
+	}, currentISOTimestamp())
 
 	if err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)
@@ -162,7 +70,7 @@ func GetPayment(authToken string, transactionID string) (payResponse *PaymentRes
 }
 
 // Pay gets a payment request from the handcash connect API
-func Pay(authToken string, payParams PayParameters) (payResponse *PaymentResponse, err error) {
+func (c *Client) Pay(authToken string, payParams PayParameters) (payResponse *PaymentResponse, err error) {
 
 	// Make sure we have an auth token
 	if len(authToken) == 0 {
@@ -170,14 +78,14 @@ func Pay(authToken string, payParams PayParameters) (payResponse *PaymentRespons
 	}
 
 	// Get the signed request
-	var signedRequest *api.SignedRequest
+	var signedRequest *signedRequest
 
-	if signedRequest, err = api.GetSignedRequest(
+	if signedRequest, err = c.getSignedRequest(
 		http.MethodPost,
 		"/v1/connect/wallet/pay",
 		sanitize.AlphaNumeric(authToken, false),
 		payParams,
-		utils.ISOTimestamp(),
+		currentISOTimestamp(),
 	); err != nil {
 		return nil, fmt.Errorf("error creating signed request: %w", err)
 	}
