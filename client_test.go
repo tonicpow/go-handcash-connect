@@ -44,16 +44,22 @@ func TestNewClient(t *testing.T) {
 	t.Run("valid new client", func(t *testing.T) {
 		client := NewClient(nil, nil, EnvironmentIAE)
 		assert.NotNil(t, client)
+		assert.NotNil(t, client.Options)
+		assert.NotNil(t, client.httpClient)
 	})
 
 	t.Run("custom http client", func(t *testing.T) {
 		client := NewClient(nil, http.DefaultClient, EnvironmentIAE)
 		assert.NotNil(t, client)
+		assert.Nil(t, client.Options)
+		assert.NotNil(t, client.httpClient)
 	})
 
 	t.Run("environment: iae", func(t *testing.T) {
 		client := NewClient(nil, nil, EnvironmentIAE)
 		assert.NotNil(t, client)
+		assert.NotNil(t, client.Options)
+		assert.NotNil(t, client.httpClient)
 		assert.Equal(t, environments[EnvironmentIAE].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentIAE].ClientURL, client.Environment.ClientURL)
 		assert.Equal(t, EnvironmentIAE, client.Environment.Environment)
@@ -62,6 +68,8 @@ func TestNewClient(t *testing.T) {
 	t.Run("environment: beta", func(t *testing.T) {
 		client := NewClient(nil, nil, EnvironmentBeta)
 		assert.NotNil(t, client)
+		assert.NotNil(t, client.Options)
+		assert.NotNil(t, client.httpClient)
 		assert.Equal(t, environments[EnvironmentBeta].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentBeta].ClientURL, client.Environment.ClientURL)
 		assert.Equal(t, EnvironmentBeta, client.Environment.Environment)
@@ -70,6 +78,8 @@ func TestNewClient(t *testing.T) {
 	t.Run("environment: production", func(t *testing.T) {
 		client := NewClient(nil, nil, EnvironmentProduction)
 		assert.NotNil(t, client)
+		assert.NotNil(t, client.Options)
+		assert.NotNil(t, client.httpClient)
 		assert.Equal(t, environments[EnvironmentProduction].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentProduction].ClientURL, client.Environment.ClientURL)
 		assert.Equal(t, EnvironmentProduction, client.Environment.Environment)
@@ -78,6 +88,8 @@ func TestNewClient(t *testing.T) {
 	t.Run("environment: unknown", func(t *testing.T) {
 		client := NewClient(nil, nil, "unknown")
 		assert.NotNil(t, client)
+		assert.NotNil(t, client.Options)
+		assert.NotNil(t, client.httpClient)
 		assert.Equal(t, environments[EnvironmentProduction].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentProduction].ClientURL, client.Environment.ClientURL)
 		assert.Equal(t, EnvironmentProduction, client.Environment.Environment)
@@ -86,6 +98,8 @@ func TestNewClient(t *testing.T) {
 	t.Run("environment: empty", func(t *testing.T) {
 		client := NewClient(nil, nil, "")
 		assert.NotNil(t, client)
+		assert.NotNil(t, client.Options)
+		assert.NotNil(t, client.httpClient)
 		assert.Equal(t, environments[EnvironmentProduction].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentProduction].ClientURL, client.Environment.ClientURL)
 		assert.Equal(t, EnvironmentProduction, client.Environment.Environment)
@@ -113,7 +127,7 @@ func TestDefaultClientOptions(t *testing.T) {
 
 	t.Run("default client options", func(t *testing.T) {
 		options := DefaultClientOptions()
-
+		assert.NotNil(t, options)
 		assert.Equal(t, defaultUserAgent, options.UserAgent)
 		assert.Equal(t, 2.0, options.BackOffExponentFactor)
 		assert.Equal(t, 2*time.Millisecond, options.BackOffInitialTimeout)
@@ -131,9 +145,11 @@ func TestDefaultClientOptions(t *testing.T) {
 
 	t.Run("no retry", func(t *testing.T) {
 		options := DefaultClientOptions()
+		assert.NotNil(t, options)
 		options.RequestRetryCount = 0
 		client := NewClient(options, nil, "")
 		assert.NotNil(t, client)
+		assert.NotNil(t, client.Options)
 	})
 }
 
