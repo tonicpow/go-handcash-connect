@@ -62,7 +62,7 @@ func httpRequest(ctx context.Context, client *Client,
 	}
 
 	// Change the header (user agent is in case they block default Go user agents)
-	request.Header.Set("Profile-Agent", client.Options.UserAgent)
+	request.Header.Set("User-Agent", client.Options.UserAgent)
 
 	// Set the content type on Method
 	if payload.Method == http.MethodPost || payload.Method == http.MethodPut {
