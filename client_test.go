@@ -17,25 +17,22 @@ type mockHTTPDefaultClient struct{}
 // Do is a mock http request
 func (m *mockHTTPDefaultClient) Do(req *http.Request) (*http.Response, error) {
 	resp := new(http.Response)
-	resp.StatusCode = http.StatusBadRequest
 
 	// No req found
 	if req == nil {
 		return resp, fmt.Errorf("missing request")
 	}
 
-	if req.URL.String() == "/test" {
-		resp.StatusCode = http.StatusOK
-		resp.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(`{"message":"test"}`)))
-	}
+	resp.StatusCode = http.StatusOK
+	resp.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(`{"Message":"test"}`)))
 
 	// Default is valid
 	return resp, nil
 }
 
 // newTestClient returns a client for mocking (using a custom HTTP interface)
-func newTestClient(httpClient httpInterface) *Client {
-	client := NewClient(nil, nil, EnvironmentIAE)
+func newTestClient(httpClient httpInterface, environment string) *Client {
+	client := NewClient(nil, nil, environment)
 	client.httpClient = httpClient
 	return client
 }
@@ -55,7 +52,7 @@ func TestNewClient(t *testing.T) {
 	})
 
 	t.Run("environment: iae", func(t *testing.T) {
-		client := NewClient(nil, http.DefaultClient, EnvironmentIAE)
+		client := NewClient(nil, nil, EnvironmentIAE)
 		assert.NotNil(t, client)
 		assert.Equal(t, environments[EnvironmentIAE].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentIAE].ClientURL, client.Environment.ClientURL)
@@ -63,7 +60,7 @@ func TestNewClient(t *testing.T) {
 	})
 
 	t.Run("environment: beta", func(t *testing.T) {
-		client := NewClient(nil, http.DefaultClient, EnvironmentBeta)
+		client := NewClient(nil, nil, EnvironmentBeta)
 		assert.NotNil(t, client)
 		assert.Equal(t, environments[EnvironmentBeta].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentBeta].ClientURL, client.Environment.ClientURL)
@@ -71,7 +68,7 @@ func TestNewClient(t *testing.T) {
 	})
 
 	t.Run("environment: production", func(t *testing.T) {
-		client := NewClient(nil, http.DefaultClient, EnvironmentProduction)
+		client := NewClient(nil, nil, EnvironmentProduction)
 		assert.NotNil(t, client)
 		assert.Equal(t, environments[EnvironmentProduction].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentProduction].ClientURL, client.Environment.ClientURL)
@@ -79,7 +76,7 @@ func TestNewClient(t *testing.T) {
 	})
 
 	t.Run("environment: unknown", func(t *testing.T) {
-		client := NewClient(nil, http.DefaultClient, "unknown")
+		client := NewClient(nil, nil, "unknown")
 		assert.NotNil(t, client)
 		assert.Equal(t, environments[EnvironmentProduction].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentProduction].ClientURL, client.Environment.ClientURL)
@@ -87,7 +84,7 @@ func TestNewClient(t *testing.T) {
 	})
 
 	t.Run("environment: empty", func(t *testing.T) {
-		client := NewClient(nil, http.DefaultClient, "")
+		client := NewClient(nil, nil, "")
 		assert.NotNil(t, client)
 		assert.Equal(t, environments[EnvironmentProduction].APIURL, client.Environment.APIURL)
 		assert.Equal(t, environments[EnvironmentProduction].ClientURL, client.Environment.ClientURL)

@@ -42,6 +42,9 @@ func httpRequest(ctx context.Context, client *Client,
 	if payload.Method == http.MethodPost || payload.Method == http.MethodPut {
 		bodyReader = bytes.NewBuffer(payload.Data)
 		response.PostData = string(payload.Data)
+	} else if payload.Method == http.MethodGet {
+		// HandCash requires data even on a GET request (DO NOT REMOVE)
+		bodyReader = bytes.NewBuffer(payload.Data) // empty: {}
 	}
 
 	// Store for debugging purposes

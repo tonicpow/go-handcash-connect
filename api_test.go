@@ -18,7 +18,7 @@ func TestGetSignedRequest(t *testing.T) {
 
 	t.Run("valid auth - empty body", func(t *testing.T) {
 
-		client := newTestClient(&mockHTTPDefaultClient{})
+		client := newTestClient(&mockHTTPDefaultClient{}, EnvironmentBeta)
 		assert.NotNil(t, client)
 
 		// These values are used (GOSEC complains about the token)
@@ -48,7 +48,7 @@ func TestGetSignedRequest(t *testing.T) {
 
 	t.Run("valid auth - with body", func(t *testing.T) {
 
-		client := newTestClient(&mockHTTPDefaultClient{})
+		client := newTestClient(&mockHTTPDefaultClient{}, EnvironmentBeta)
 		assert.NotNil(t, client)
 
 		// These values are used (GOSEC complains about the token)
@@ -84,7 +84,7 @@ func TestGetSignedRequest(t *testing.T) {
 	})
 
 	t.Run("invalid auth token", func(t *testing.T) {
-		client := newTestClient(&mockHTTPDefaultClient{})
+		client := newTestClient(&mockHTTPDefaultClient{}, EnvironmentBeta)
 		assert.NotNil(t, client)
 		method := http.MethodGet
 		endpoint := endpointProfileCurrent
@@ -96,7 +96,7 @@ func TestGetSignedRequest(t *testing.T) {
 	})
 
 	t.Run("valid token, invalid json", func(t *testing.T) {
-		client := newTestClient(&mockHTTPDefaultClient{})
+		client := newTestClient(&mockHTTPDefaultClient{}, EnvironmentBeta)
 		assert.NotNil(t, client)
 		method := http.MethodGet
 		endpoint := endpointProfileCurrent
@@ -220,7 +220,7 @@ func TestGetRequestSignatureHash(t *testing.T) {
 		hash, err := getRequestSignatureHash(method, endpoint, nil, timestamp)
 		assert.NoError(t, err)
 		assert.Equal(t, 32, len(hash))
-		assert.Equal(t, "e747c4669de9a0355f4fdb96886f198c8bdaf8df2797d5c5fdec17ae21361fe9", hex.EncodeToString(hash))
+		assert.Equal(t, "aaa21242e579564ec36a3c5108cbd215661fb61cfb8cf17dbf00c074f4561378", hex.EncodeToString(hash))
 	})
 
 	t.Run("missing method", func(t *testing.T) {
@@ -231,7 +231,7 @@ func TestGetRequestSignatureHash(t *testing.T) {
 		hash, err := getRequestSignatureHash(method, endpoint, nil, timestamp)
 		assert.NoError(t, err)
 		assert.Equal(t, 32, len(hash))
-		assert.Equal(t, "2078d4e9cb78b7cbfcb9feb3d988f10fc661f43278092f000fd57dbb156e7166", hex.EncodeToString(hash))
+		assert.Equal(t, "1f1917cb12ecd2ef0d245ac193b348f91db912e93d692b504a94ca850ac412f8", hex.EncodeToString(hash))
 	})
 
 	t.Run("missing endpoint", func(t *testing.T) {
@@ -242,7 +242,7 @@ func TestGetRequestSignatureHash(t *testing.T) {
 		hash, err := getRequestSignatureHash(method, endpoint, nil, timestamp)
 		assert.NoError(t, err)
 		assert.Equal(t, 32, len(hash))
-		assert.Equal(t, "50c3481d682e2e589a0149fa52a8cdeccf8f533f55e80c5b66de6e677243d123", hex.EncodeToString(hash))
+		assert.Equal(t, "b7b2f37bcd5d28ebd048f56160787a7a86b23e6233167e638e288332dedbdb3b", hex.EncodeToString(hash))
 	})
 
 	t.Run("missing timestamp", func(t *testing.T) {
@@ -271,7 +271,7 @@ func TestGetRequestSignatureHash(t *testing.T) {
 		hash, err := getRequestSignatureHash(method, endpoint, customBodyContents, timestamp)
 		assert.NoError(t, err)
 		assert.Equal(t, 32, len(hash))
-		assert.Equal(t, "0d296d7c49cb04cc09785f6ca1f380c9c1557f64666946a930ba7a7fd3f774e8", hex.EncodeToString(hash))
+		assert.Equal(t, "73a73a79325098f309881d0103e189b73f1a8a247440c93d36852ca036ab7dc5", hex.EncodeToString(hash))
 	})
 
 	t.Run("custom body - advanced struct - valid json", func(t *testing.T) {
@@ -292,7 +292,7 @@ func TestGetRequestSignatureHash(t *testing.T) {
 		hash, err := getRequestSignatureHash(method, endpoint, customBodyContents, timestamp)
 		assert.NoError(t, err)
 		assert.Equal(t, 32, len(hash))
-		assert.Equal(t, "64e4635edff924ae60c64922fcdf1f59cb956ce0a60f9213e24e9d3f44419ec2", hex.EncodeToString(hash))
+		assert.Equal(t, "287e66e5b4ffe062015c078895d70120638080bde96f9a48022add1f4c69f78e", hex.EncodeToString(hash))
 	})
 
 	t.Run("invalid body - produces error", func(t *testing.T) {

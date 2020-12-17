@@ -1,5 +1,37 @@
 package handcash
 
+// CurrencyCode is an enum for supported currencies
+type CurrencyCode string
+
+// CurrencyCode enums
+const (
+	CurrencyARS CurrencyCode = "ARS"
+	CurrencyAUD CurrencyCode = "AUD"
+	CurrencyBRL CurrencyCode = "BRL"
+	CurrencyBSV CurrencyCode = "BSV"
+	CurrencyCAD CurrencyCode = "CAD"
+	CurrencyCHF CurrencyCode = "CHF"
+	CurrencyCNY CurrencyCode = "CNY"
+	CurrencyCOP CurrencyCode = "COP"
+	CurrencyCZK CurrencyCode = "CZK"
+	CurrencyDKK CurrencyCode = "DKK"
+	CurrencyEUR CurrencyCode = "EUR"
+	CurrencyGBP CurrencyCode = "GBP"
+	CurrencyHKD CurrencyCode = "HKD"
+	CurrencyJPY CurrencyCode = "JPY"
+	CurrencyMXN CurrencyCode = "MXN"
+	CurrencyNOK CurrencyCode = "NOK"
+	CurrencyNZD CurrencyCode = "NZD"
+	CurrencyPHP CurrencyCode = "PHP"
+	CurrencyRUB CurrencyCode = "RUB"
+	CurrencySAT CurrencyCode = "SAT"
+	CurrencySEK CurrencyCode = "SEK"
+	CurrencySGD CurrencyCode = "SGD"
+	CurrencyTHB CurrencyCode = "THB"
+	CurrencyUSD CurrencyCode = "USD"
+	CurrencyZAR CurrencyCode = "ZAR"
+)
+
 // User are the user fields returned by the public and private profile endpoints
 type User struct {
 	PublicProfile  PublicProfile  `json:"publicProfile"`
@@ -8,12 +40,12 @@ type User struct {
 
 // PublicProfile is the public profile
 type PublicProfile struct {
-	AvatarURL         string `json:"avatarUrl"`
-	DisplayName       string `json:"displayName"`
-	Handle            string `json:"handle"`
-	ID                string `json:"id"`
-	LocalCurrencyCode string `json:"localCurrencyCode"`
-	Paymail           string `json:"paymail"`
+	AvatarURL         string       `json:"avatarUrl"`
+	DisplayName       string       `json:"displayName"`
+	Handle            string       `json:"handle"`
+	ID                string       `json:"id"`
+	LocalCurrencyCode CurrencyCode `json:"localCurrencyCode"`
+	Paymail           string       `json:"paymail"`
 }
 
 // PrivateProfile is the private profile

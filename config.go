@@ -53,61 +53,29 @@ const (
 	endpointProfileCurrent = endpointProfile + "/currentUserProfile"
 
 	// endpointPublicProfilesByHandle will return profiles given list of handles
-	endpointPublicProfilesByHandle = endpointProfile + "/publicUserProfiles"
+	// endpointPublicProfilesByHandle = endpointProfile + "/publicUserProfiles"
 
 	// endpointGetFriends will return a list of friends
-	endpointGetFriends = endpointProfile + "/friends"
+	// endpointGetFriends = endpointProfile + "/friends"
 
 	// endpointGetPermissions will return a list of permissions for the user
-	endpointGetPermissions = endpointProfile + "/permissions"
+	// endpointGetPermissions = endpointProfile + "/permissions"
 
 	// endpointGetEncryptionKeypair will return the public key
-	endpointGetEncryptionKeypair = endpointProfile + "/encryptionKeypair"
+	// endpointGetEncryptionKeypair = endpointProfile + "/encryptionKeypair"
 
 	// endpointSignData will sign given data
-	endpointSignData = endpointProfile + "/signData"
+	// endpointSignData = endpointProfile + "/signData"
 
 	// endpointWallet is for accessing wallet information
-	endpointWallet = "/" + apiVersion + "/connect/wallet"
+	// endpointWallet = "/" + apiVersion + "/connect/wallet"
 
 	// endpointGetSpendableBalance will return a spendable balance amount
-	endpointGetSpendableBalance = endpointProfile + "/spendableBalance"
+	// endpointGetSpendableBalance = endpointProfile + "/spendableBalance"
 
 	// endpointGetPayRequest will create a new pay request
-	endpointGetPayRequest = endpointWallet + "/pay"
+	// endpointGetPayRequest = endpointWallet + "/pay"
 
 	// endpointGetPaymentRequest will create a new payment request
-	endpointGetPaymentRequest = endpointWallet + "/payment"
-)
-
-// CurrencyCode is an enum for supported currencies
-type CurrencyCode string
-
-// CurrencyCode enums
-const (
-	CurrencyARS CurrencyCode = "ARS"
-	CurrencyAUD CurrencyCode = "AUD"
-	CurrencyBRL CurrencyCode = "BRL"
-	CurrencyCAD CurrencyCode = "CAD"
-	CurrencyCHF CurrencyCode = "CHF"
-	CurrencyCNY CurrencyCode = "CNY"
-	CurrencyCOP CurrencyCode = "COP"
-	CurrencyCZK CurrencyCode = "CZK"
-	CurrencyDKK CurrencyCode = "DKK"
-	CurrencyEUR CurrencyCode = "EUR"
-	CurrencyGBP CurrencyCode = "GBP"
-	CurrencyHKD CurrencyCode = "HKD"
-	CurrencyJPY CurrencyCode = "JPY"
-	CurrencyMXN CurrencyCode = "MXN"
-	CurrencyNOK CurrencyCode = "NOK"
-	CurrencyNZD CurrencyCode = "NZD"
-	CurrencyPHP CurrencyCode = "PHP"
-	CurrencyRUB CurrencyCode = "RUB"
-	CurrencySEK CurrencyCode = "SEK"
-	CurrencySGD CurrencyCode = "SGD"
-	CurrencyTHB CurrencyCode = "THB"
-	CurrencyUSD CurrencyCode = "USD"
-	CurrencyZAR CurrencyCode = "ZAR"
-	CurrencySAT CurrencyCode = "SAT"
-	CurrencyBSV CurrencyCode = "BSV"
+	// endpointGetPaymentRequest = endpointWallet + "/payment"
 )

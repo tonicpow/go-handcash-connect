@@ -73,12 +73,6 @@ func NewClient(options *ClientOptions, customHTTPClient *http.Client,
 	// Create a client
 	c = new(Client)
 
-	// Is there a custom HTTP client to use?
-	if customHTTPClient != nil {
-		c.httpClient = customHTTPClient
-		return
-	}
-
 	// Set options (either default or user modified)
 	if options == nil {
 		options = DefaultClientOptions()
@@ -88,6 +82,12 @@ func NewClient(options *ClientOptions, customHTTPClient *http.Client,
 	var found bool
 	if c.Environment, found = environments[customEnvironment]; !found {
 		c.Environment = environments[EnvironmentProduction]
+	}
+
+	// Is there a custom HTTP client to use?
+	if customHTTPClient != nil {
+		c.httpClient = customHTTPClient
+		return
 	}
 
 	// dial is the net dialer for clientDefaultTransport
