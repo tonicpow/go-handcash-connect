@@ -78,6 +78,9 @@ func NewClient(options *ClientOptions, customHTTPClient *http.Client,
 		options = DefaultClientOptions()
 	}
 
+	// Set the options
+	c.Options = options
+
 	// Set the environment
 	var found bool
 	if c.Environment, found = environments[customEnvironment]; !found {
@@ -102,9 +105,6 @@ func NewClient(options *ClientOptions, customHTTPClient *http.Client,
 		Proxy:                 http.ProxyFromEnvironment,
 		TLSHandshakeTimeout:   options.TransportTLSHandshakeTimeout,
 	}
-
-	// Set the options
-	c.Options = options
 
 	// Determine the strategy for the http client
 	if options.RequestRetryCount <= 0 {

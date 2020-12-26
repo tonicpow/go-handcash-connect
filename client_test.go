@@ -51,7 +51,7 @@ func TestNewClient(t *testing.T) {
 	t.Run("custom http client", func(t *testing.T) {
 		client := NewClient(nil, http.DefaultClient, EnvironmentIAE)
 		assert.NotNil(t, client)
-		assert.Nil(t, client.Options)
+		assert.NotNil(t, client.Options)
 		assert.NotNil(t, client.httpClient)
 	})
 
