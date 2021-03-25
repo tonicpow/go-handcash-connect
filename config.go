@@ -70,8 +70,8 @@ const (
 	// endpointWallet is for accessing wallet information
 	endpointWallet = "/" + apiVersion + "/connect/wallet"
 
-	// endpointGetSpendableBalance will return a spendable balance amount
-	// endpointGetSpendableBalance = endpointProfile + "/spendableBalance"
+	// endpointGetSpendableBalanceRequest will return a spendable balance amount
+	endpointGetSpendableBalanceRequest = endpointWallet + "/spendableBalance"
 
 	// endpointGetPayRequest will create a new pay request
 	endpointGetPayRequest = endpointWallet + "/pay"
