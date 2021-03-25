@@ -84,6 +84,11 @@ type PaymentRequest struct {
 	TransactionID string `json:"transactionId"`
 }
 
+// BalanceRequest is used for GetSpendableBalance()
+type BalanceRequest struct {
+	CurrencyCode CurrencyCode `json:"currencyCode"`
+}
+
 // AppAction enum
 type AppAction string
 
