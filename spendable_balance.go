@@ -15,7 +15,8 @@ type SpendableBalanceResponse struct {
 }
 
 // GetSpendableBalance gets the user's spendable balance from the handcash connect API
-func (c *Client) GetSpendableBalance(ctx context.Context, authToken string, currencyCode CurrencyCode) (spendableBalanceResponse *SpendableBalanceResponse, err error) {
+func (c *Client) GetSpendableBalance(ctx context.Context, authToken string,
+	currencyCode CurrencyCode) (*SpendableBalanceResponse, error) {
 
 	// Make sure we have an auth token
 	if len(authToken) == 0 {
@@ -63,7 +64,7 @@ func (c *Client) GetSpendableBalance(ctx context.Context, authToken string, curr
 		return nil, response.Error
 	}
 
-	spendableBalanceResponse = new(SpendableBalanceResponse)
+	spendableBalanceResponse := new(SpendableBalanceResponse)
 
 	if err = json.Unmarshal(response.BodyContents, &spendableBalanceResponse); err != nil {
 		return nil, fmt.Errorf("failed unmarshal %w", err)
