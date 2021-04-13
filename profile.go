@@ -13,6 +13,7 @@ import (
     "id": "1234567890",
     "handle": "MisterZ",
     "paymail": "MisterZ@beta.handcash.io",
+		"bitcoinUnit": "DUR",
     "displayName": "",
     "avatarUrl": "https://beta-cloud.handcash.io/users/profilePicture/MisterZ",
     "localCurrencyCode": "USD"

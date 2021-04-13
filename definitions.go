@@ -46,6 +46,7 @@ type PublicProfile struct {
 	ID                string       `json:"id"`
 	LocalCurrencyCode CurrencyCode `json:"localCurrencyCode"`
 	Paymail           string       `json:"paymail"`
+	BitcoinUnit       string       `json:"bitcoinUnit"`
 }
 
 // PrivateProfile is the private profile
