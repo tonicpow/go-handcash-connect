@@ -28,10 +28,10 @@ import (
 // GetProfile will get the profile for the associated auth token
 //
 // Specs: https://github.com/HandCash/handcash-connect-sdk-js/blob/master/src/profile/index.js
-func (c *Client) GetProfile(ctx context.Context, authToken string) (*Profile, error) {
+func (c *Client) GetProfile(ctx context.Context, token string) (*Profile, error) {
 
 	// Make sure we have an auth token
-	if len(authToken) == 0 {
+	if len(token) == 0 {
 		return nil, fmt.Errorf("missing auth token")
 	}
 
@@ -39,8 +39,8 @@ func (c *Client) GetProfile(ctx context.Context, authToken string) (*Profile, er
 	signed, err := c.getSignedRequest(
 		http.MethodGet,
 		endpointProfileCurrent,
-		authToken,
-		&requestBody{authToken: authToken},
+		token,
+		&requestBody{authToken: token},
 		currentISOTimestamp(),
 	)
 	if err != nil {
