@@ -44,7 +44,7 @@ func getRequestSignatureHash(method, endpoint string, body interface{},
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal body %w", err)
 		}
-		bodyString = fmt.Sprintf("%s", bodyBytes)
+		bodyString = string(bodyBytes)
 	}
 
 	// Set the signature string
