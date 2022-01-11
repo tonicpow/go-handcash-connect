@@ -1,6 +1,6 @@
 module github.com/tonicpow/go-handcash-connect
 
-go 1.15
+go 1.16
 
 require (
 	github.com/bitcoinschema/go-bitcoin v0.3.20
