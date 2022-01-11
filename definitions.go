@@ -135,7 +135,7 @@ type PayParameters struct {
 // PaymentType enum
 type PaymentType string
 
-// PaymentType enum
+// PaymentSend enum
 const (
 	PaymentSend PaymentType = "send"
 )
@@ -143,7 +143,7 @@ const (
 // ParticipantType enum
 type ParticipantType string
 
-// ParticipantType enum
+// ParticipantUser enum
 const (
 	ParticipantUser ParticipantType = "user"
 )

@@ -3,7 +3,7 @@ package handcash
 const (
 
 	// version is the current package version
-	version = "v0.1.0"
+	version = "v0.1.10"
 
 	// defaultUserAgent is the default user agent for all requests
 	defaultUserAgent string = "go-handcash-connect: " + version
@@ -11,7 +11,7 @@ const (
 	// apiVersion of the Handcash Connect SDK
 	apiVersion = "v1"
 
-	// emptyBody is the default body if no body is set
+	// emptyBody is the default body if nobody is set
 	emptyBody = "{}"
 )
 
