@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/bitcoinschema/go-bitcoin"
+	"github.com/bitcoinschema/go-bitcoin/v2"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -7,13 +7,14 @@ import (
 	"fmt"
 
 	"github.com/bitcoinsv/bsvd/bsvec"
+	"github.com/libsv/go-bk/bec"
 )
 
 // getRequestSignature will return the request signature
 //
 // Specs: https://github.com/HandCash/handcash-connect-sdk-js/blob/00300de6d225fa37fe2f4a5efe315dd08dd4beb9/src/api/http_request_factory.js#L16
 func getRequestSignature(method, endpoint string, body interface{}, timestamp string,
-	privateKey *bsvec.PrivateKey) ([]byte, error) {
+	privateKey *bec.PrivateKey) ([]byte, error) {
 
 	// Create the signature hash
 	signatureHash, err := getRequestSignatureHash(method, endpoint, body, timestamp)
@@ -22,13 +23,13 @@ func getRequestSignature(method, endpoint string, body interface{}, timestamp st
 	}
 
 	// Sign using private key
-	var sig *bsvec.Signature
+	var sig *bec.Signature
 	if sig, err = privateKey.Sign(signatureHash); err != nil {
 		return nil, err
 	}
 
 	// Return the serialized signature string
-	return sig.Serialize(), nil
+	return sig.Serialise(), nil
 }
 
 // getRequestSignatureHash will return the signature hash
@@ -66,7 +67,7 @@ func (c *Client) getSignedRequest(method, endpoint, authToken string,
 	}
 
 	// Get key pairs
-	privateKey, publicKey := bsvec.PrivKeyFromBytes(bsvec.S256(), tokenBytes)
+	privateKey, publicKey := bec.PrivKeyFromBytes(bsvec.S256(), tokenBytes)
 
 	// Get the request signature
 	var requestSignature []byte
@@ -80,7 +81,7 @@ func (c *Client) getSignedRequest(method, endpoint, authToken string,
 	return &signedRequest{
 		Body: body,
 		Headers: oAuthHeaders{
-			OauthPublicKey: hex.EncodeToString(publicKey.SerializeCompressed()),
+			OauthPublicKey: hex.EncodeToString(publicKey.SerialiseCompressed()),
 			OauthSignature: hex.EncodeToString(requestSignature),
 			OauthTimestamp: timestamp,
 		},
