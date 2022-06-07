@@ -7,7 +7,7 @@
 [![codecov](https://codecov.io/gh/tonicpow/go-handcash-connect/branch/master/graph/badge.svg?v=3)](https://codecov.io/gh/tonicpow/go-handcash-connect)
 [![Go](https://img.shields.io/github/go-mod/go-version/tonicpow/go-handcash-connect?v=3)](https://golang.org/)
 <br>
-[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://gh.mergify.io/badges/tonicpow/go-handcash-connect&style=flat&v=3)](https://mergify.io)
+[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://api.mergify.com/v1/badges/tonicpow/go-handcash-connect&style=flat&v=3)](https://mergify.io)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/tonicpow/go-handcash-connect)
 
 <br/>
