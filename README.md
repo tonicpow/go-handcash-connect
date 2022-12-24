@@ -2,7 +2,7 @@
 > The unofficial golang implementation for the [HandCash Connect SDK](https://handcash.github.io/handcash-connect-sdk-js-beta-docs/#/)
 
 [![Release](https://img.shields.io/github/release-pre/tonicpow/go-handcash-connect.svg?logo=github&style=flat&v=3)](https://github.com/tonicpow/go-handcash-connect/releases)
-[![Build Status](https://img.shields.io/github/workflow/status/tonicpow/go-handcash-connect/run-go-tests?logo=github&v=3)](https://github.com/tonicpow/go-handcash-connect/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/tonicpow/go-handcash-connect/run-tests.yml?branch=master&logo=github&v=3)](https://github.com/tonicpow/go-handcash-connect/actions)
 [![Report](https://goreportcard.com/badge/github.com/tonicpow/go-handcash-connect?style=flat&v=3)](https://goreportcard.com/report/github.com/tonicpow/go-handcash-connect)
 [![codecov](https://codecov.io/gh/tonicpow/go-handcash-connect/branch/master/graph/badge.svg?v=3)](https://codecov.io/gh/tonicpow/go-handcash-connect)
 [![Go](https://img.shields.io/github/go-mod/go-version/tonicpow/go-handcash-connect?v=3)](https://golang.org/)
