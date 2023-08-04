@@ -15,7 +15,7 @@ jobs:
   test:
     strategy:
       matrix:
-        go-version: [ 1.17.x, 1.18.x ]
+        go-version: [ 1.18.x, 1.19.x ]
         os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
@@ -42,5 +42,5 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: unittests
-          fail_ci_if_error: true # optional (default = false)
+          fail_ci_if_error: false # optional (default = false)
           verbose: true # optional (default = false)
